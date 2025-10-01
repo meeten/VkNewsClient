@@ -1,4 +1,4 @@
-package com.example.vknewsclient.models
+package com.example.vknewsclient.presention.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
