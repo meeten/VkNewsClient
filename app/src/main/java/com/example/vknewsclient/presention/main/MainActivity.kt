@@ -3,6 +3,7 @@ package com.example.vknewsclient.presention.main
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.example.vknewsclient.presention.auth.AuthContent
 import com.example.vknewsclient.ui.theme.VkNewsClientTheme
 
 class MainActivity : ComponentActivity() {
@@ -11,7 +12,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             VkNewsClientTheme {
-
+                AuthContent()
             }
         }
     }
