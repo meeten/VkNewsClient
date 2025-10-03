@@ -2,10 +2,12 @@ package com.example.vknewsclient.presention.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -13,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,18 +26,26 @@ import com.example.vknewsclient.ui.theme.VkNewsClientTheme
 
 @Composable
 fun LoginScreen(onLoginClickListener: () -> Unit) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.primary),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         Image(
             painter = painterResource(R.drawable.vk_logo),
             contentDescription = null,
-            modifier = Modifier.padding(120.dp)
+            modifier = Modifier.size(150.dp)
         )
+
+        Spacer(modifier = Modifier.height(130.dp))
 
         Button(
             onClick = { onLoginClickListener() },
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.tertiary,
-                contentColor = MaterialTheme.colorScheme.primary
+                contentColor = Color.White
             )
         ) {
 
@@ -50,11 +61,7 @@ fun LoginScreen(onLoginClickListener: () -> Unit) {
 @Composable
 fun LoginScreenPreviewLight() {
     VkNewsClientTheme(darkTheme = false) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            LoginScreen({
-
-            })
-        }
+        LoginScreen {}
     }
 }
 
@@ -62,12 +69,6 @@ fun LoginScreenPreviewLight() {
 @Composable
 fun LoginScreenPreviewDark() {
     VkNewsClientTheme(darkTheme = true) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.primary)
-        ) {
-            LoginScreen { }
-        }
+        LoginScreen { }
     }
 }
