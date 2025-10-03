@@ -16,7 +16,9 @@ fun AuthContent() {
     when (authState) {
         is AuthState.Loading -> LoadingScreen()
 
-        is AuthState.NoAuthenticated -> LoginScreen()
+        is AuthState.NoAuthenticated -> LoginScreen({
+            viewModel.registration()
+        })
 
         is AuthState.Authenticated -> MainScreen()
 
