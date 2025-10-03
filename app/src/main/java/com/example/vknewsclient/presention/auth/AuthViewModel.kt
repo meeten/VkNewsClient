@@ -60,13 +60,22 @@ class AuthViewModel(val vkid: VKID) : ViewModel() {
     }
 
     fun registration() {
+        _authState.value = AuthState.Loading
+
         val vkidAuthCallback = object : VKIDAuthCallback {
             override fun onAuth(accessToken: AccessToken) {
                 _authState.value = AuthState.Authenticated(accessToken)
             }
 
             override fun onFail(fail: VKIDAuthFail) {
-                _authState.value = AuthState.Error(fail.description)
+                when (fail) {
+                    is VKIDAuthFail.Canceled -> {
+                        _authState.value = AuthState.NoAuthenticated
+                    }
+
+                    else -> _authState.value = AuthState.Error(fail.description)
+                }
+
             }
         }
 
