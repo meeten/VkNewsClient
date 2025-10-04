@@ -6,7 +6,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.ui.graphics.vector.ImageVector
 
-sealed class NavigationItem(val imageVector: ImageVector, title: String) {
+sealed class NavigationItem(val imageVector: ImageVector, val title: String) {
     object Home : NavigationItem(imageVector = Icons.Outlined.Home, title = "Главная")
 
     object Favorite : NavigationItem(imageVector = Icons.Outlined.Favorite, title = "Избранное")
