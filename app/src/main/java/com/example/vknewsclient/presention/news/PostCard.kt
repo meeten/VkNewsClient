@@ -35,7 +35,7 @@ import com.example.vknewsclient.ui.theme.VkNewsClientTheme
 import kotlin.random.Random
 
 @Composable
-fun PostCard() {
+fun PostCard(modifier: Modifier) {
     Card(
         modifier = Modifier.padding(10.dp),
         border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.secondary)
@@ -159,7 +159,7 @@ private fun PostCardLight() {
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.primary)
         ) {
-            PostCard()
+            PostCard(modifier = Modifier)
         }
     }
 }
@@ -173,7 +173,8 @@ private fun PostCardDark() {
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.primary)
         ) {
-            PostCard()
+            PostCard(modifier = Modifier
+            )
         }
     }
 }
