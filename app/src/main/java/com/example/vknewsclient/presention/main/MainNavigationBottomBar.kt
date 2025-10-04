@@ -1,8 +1,6 @@
 package com.example.vknewsclient.presention.main
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -12,10 +10,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.example.vknewsclient.navigation.NavigationState
+import com.example.vknewsclient.navigation.rememberNavigationState
 import com.example.vknewsclient.ui.theme.VkNewsClientTheme
 
 @Composable
-fun MainNavigationBottomBar() {
+fun MainNavigationBottomBar(navigationState: NavigationState) {
+
+    val navBackStackEntry = navigationState.navController.currentBackStackEntryAsState()
+    val currentDestinationRoute = navBackStackEntry.value?.destination?.route
+
     val navigationItems = listOf<NavigationItem>(
         NavigationItem.Home, NavigationItem.Favorite,
         NavigationItem.Profile
@@ -28,30 +34,14 @@ fun MainNavigationBottomBar() {
         )
 
         BottomAppBar {
-            navigationItems.forEachIndexed { index, item ->
+            navigationItems.forEach { item ->
                 NavigationBarItem(
-                    selected = index == 0,
-                    onClick = {},
+                    selected = currentDestinationRoute == item.screen.route,
+                    onClick = { navigationState.navigateTo(item.screen.route) },
                     icon = { Icon(imageVector = item.imageVector, contentDescription = null) },
                     label = { Text(text = item.title) }
                 )
             }
         }
-    }
-}
-
-@Preview(showBackground = true, showSystemUi = false)
-@Composable
-fun MainNavigationBottomBarPreviewLight() {
-    VkNewsClientTheme(darkTheme = false) {
-        MainNavigationBottomBar()
-    }
-}
-
-@Preview(showBackground = true, showSystemUi = false)
-@Composable
-fun MainNavigationBottomBarPreviewDark() {
-    VkNewsClientTheme(darkTheme = true) {
-        MainNavigationBottomBar()
     }
 }
