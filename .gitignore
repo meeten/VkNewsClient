@@ -18,6 +18,9 @@ local.properties
 .DS_Store
 Thumbs.db
 
+# Log files 
+*.log
+
 # External native build
 .externalNativeBuild
 .cxx/
