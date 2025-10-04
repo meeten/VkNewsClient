@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.vkid)
     implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
