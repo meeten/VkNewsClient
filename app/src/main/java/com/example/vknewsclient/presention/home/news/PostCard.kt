@@ -1,4 +1,4 @@
-package com.example.vknewsclient.presention.news
+package com.example.vknewsclient.presention.home.news
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -173,7 +173,8 @@ private fun PostCardDark() {
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.primary)
         ) {
-            PostCard(modifier = Modifier
+            PostCard(
+                modifier = Modifier
             )
         }
     }
