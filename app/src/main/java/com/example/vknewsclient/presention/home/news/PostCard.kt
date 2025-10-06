@@ -3,6 +3,7 @@ package com.example.vknewsclient.presention.home.news
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,27 +32,43 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.vknewsclient.R
+import com.example.vknewsclient.domain.FeedPost
+import com.example.vknewsclient.domain.StatisticItem
+import com.example.vknewsclient.domain.StatisticItemType
 import com.example.vknewsclient.ui.theme.VkNewsClientTheme
+import javax.xml.transform.ErrorListener
 import kotlin.random.Random
 
 @Composable
-fun PostCard() {
+fun PostCard(
+    feedPost: FeedPost,
+    onLikeClickListener: (StatisticItem) -> Unit,
+    onCommentClickListener: (StatisticItem) -> Unit,
+    onShareClickListener: (StatisticItem) -> Unit,
+    onViewClickListener: (StatisticItem) -> Unit,
+) {
     Card(
         modifier = Modifier.padding(10.dp),
         border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.secondary)
     ) {
         Column {
-            PostHeader()
+            PostHeader(feedPost)
 
-            Post()
+            Post(feedPost)
 
-            Statistics()
+            Statistics(
+                feedPost.statistics,
+                onLikeClickListener,
+                onCommentClickListener,
+                onShareClickListener,
+                onViewClickListener
+            )
         }
     }
 }
 
 @Composable
-private fun PostHeader() {
+private fun PostHeader(feedPost: FeedPost) {
     Row(
         modifier = Modifier
             .padding(10.dp)
@@ -59,7 +76,7 @@ private fun PostHeader() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(R.drawable.post_comunity_thumbnail),
+            painter = painterResource(feedPost.publicImage),
             contentDescription = null,
             modifier = Modifier
                 .size(60.dp)
@@ -70,7 +87,7 @@ private fun PostHeader() {
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "/dev/null",
+                text = feedPost.publicName,
                 style = TextStyle(
                     fontSize = 18.sp, color = MaterialTheme.colorScheme.onPrimary
                 )
@@ -79,7 +96,7 @@ private fun PostHeader() {
             Spacer(modifier = Modifier.height(5.dp))
 
             Text(
-                text = "14:00",
+                text = feedPost.publicationTime,
                 style = TextStyle(
                     fontSize = 16.sp, color = MaterialTheme.colorScheme.onSecondary
                 )
@@ -95,14 +112,14 @@ private fun PostHeader() {
 }
 
 @Composable
-private fun Post() {
+private fun Post(feedPost: FeedPost) {
     Column(modifier = Modifier.padding(horizontal = 10.dp)) {
-        Text(text = "content content content content content")
+        Text(text = feedPost.postContent)
 
         Spacer(modifier = Modifier.height(10.dp))
 
         Image(
-            painter = painterResource(R.drawable.post_content_image),
+            painter = painterResource(feedPost.postContentImage),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
@@ -113,27 +130,48 @@ private fun Post() {
 }
 
 @Composable
-private fun Statistics() {
+private fun Statistics(
+    statistics: List<StatisticItem>,
+    onLikeClickListener: (StatisticItem) -> Unit,
+    onCommentClickListener: (StatisticItem) -> Unit,
+    onShareClickListener: (StatisticItem) -> Unit,
+    onViewClickListener: (StatisticItem) -> Unit,
+) {
+    val likes = statistics.findStatisticItemByType(StatisticItemType.LIKES)
+    val comments = statistics.findStatisticItemByType(StatisticItemType.COMMENTS)
+    val shares = statistics.findStatisticItemByType(StatisticItemType.SHARES)
+    val views = statistics.findStatisticItemByType(StatisticItemType.VIEWS)
+
     Row(modifier = Modifier.padding(10.dp)) {
         Row(modifier = Modifier.weight(1f)) {
-            ImageTextLayout(R.drawable.ic_like, Random.nextInt(10, 100))
+            ImageTextLayout(likes.type.src, likes.count, {
+                onLikeClickListener(likes)
+            })
 
             Spacer(modifier = Modifier.width(14.dp))
 
-            ImageTextLayout(R.drawable.ic_comment, Random.nextInt(10, 100))
+            ImageTextLayout(comments.type.src, comments.count, {
+                onCommentClickListener(comments)
+            })
 
             Spacer(modifier = Modifier.width(14.dp))
 
-            ImageTextLayout(R.drawable.ic_share, Random.nextInt(10, 100))
+            ImageTextLayout(shares.type.src, shares.count, {
+                onShareClickListener(shares)
+            })
         }
 
-        ImageTextLayout(R.drawable.ic_views_count, Random.nextInt(10, 100))
+        ImageTextLayout(views.type.src, views.count, {
+            onViewClickListener(views)
+        })
     }
 }
 
 @Composable
-private fun ImageTextLayout(src: Int, count: Int) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+private fun ImageTextLayout(src: Int, count: Int, onItemClickListener: () -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
+        onItemClickListener()
+    }) {
         Image(
             painter = painterResource(src),
             contentDescription = null
@@ -150,30 +188,7 @@ private fun ImageTextLayout(src: Int, count: Int) {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = false)
-@Composable
-private fun PostCardLight() {
-    VkNewsClientTheme(darkTheme = false) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.primary)
-        ) {
-            PostCard()
-        }
-    }
-}
-
-@Preview(showBackground = true, showSystemUi = false)
-@Composable
-private fun PostCardDark() {
-    VkNewsClientTheme(darkTheme = true) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.primary)
-        ) {
-            PostCard()
-        }
-    }
+private fun List<StatisticItem>.findStatisticItemByType(type: StatisticItemType): StatisticItem {
+    return this.firstOrNull { it.type == type }
+        ?: throw IllegalStateException("Undefined type: $type")
 }
