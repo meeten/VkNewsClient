@@ -29,7 +29,7 @@ data class FeedPost(
             count = randomCountInRangeForStatisticItem(10..100)
         ),
         StatisticItem(
-            type = StatisticItemType.SHARES,
+            type = StatisticItemType.VIEWS,
             count = randomCountInRangeForStatisticItem(100..1000)
         )
     ),
