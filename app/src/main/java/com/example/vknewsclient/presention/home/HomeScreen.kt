@@ -34,7 +34,13 @@ fun HomeScreen(modifier: Modifier) {
                 modifier = Modifier.animateItem(),
                 enableDismissFromStartToEnd = false,
             ) {
-                PostCard()
+                PostCard(
+                    feedPost = feedPost,
+                    onLikeClickListener = { viewModel.changeStatisticsFeedPost(feedPost, it) },
+                    onCommentClickListener = { viewModel.changeStatisticsFeedPost(feedPost, it) },
+                    onShareClickListener = { viewModel.changeStatisticsFeedPost(feedPost, it) },
+                    onViewClickListener = { viewModel.changeStatisticsFeedPost(feedPost, it) }
+                )
             }
         }
     }
