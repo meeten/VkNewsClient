@@ -1,4 +1,4 @@
-package com.example.vknewsclient.domain.models
+package com.example.vknewsclient.domain.state
 
 import com.vk.id.AccessToken
 

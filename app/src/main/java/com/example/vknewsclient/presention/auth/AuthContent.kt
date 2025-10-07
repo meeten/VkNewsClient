@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.vknewsclient.domain.models.AuthState
+import com.example.vknewsclient.domain.state.AuthState
 import com.example.vknewsclient.presention.main.MainScreen
 import com.vk.id.VKID
 

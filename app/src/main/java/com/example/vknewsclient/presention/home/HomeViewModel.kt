@@ -3,8 +3,8 @@ package com.example.vknewsclient.presention.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.vknewsclient.domain.FeedPost
-import com.example.vknewsclient.domain.StatisticItem
+import com.example.vknewsclient.domain.models.FeedPost
+import com.example.vknewsclient.domain.models.StatisticItem
 
 class HomeViewModel : ViewModel() {
     private val initList = mutableListOf<FeedPost>().apply {

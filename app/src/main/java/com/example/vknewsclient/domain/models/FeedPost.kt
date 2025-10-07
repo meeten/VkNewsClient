@@ -1,4 +1,4 @@
-package com.example.vknewsclient.domain
+package com.example.vknewsclient.domain.models
 
 import com.example.vknewsclient.R
 import kotlin.random.Random
