@@ -9,14 +9,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.vknewsclient.domain.models.FeedPost
+import com.example.vknewsclient.domain.state.NewsFeedScreenState
 import com.example.vknewsclient.presention.home.news.PostCard
 
 @Composable
 fun HomeScreen(modifier: Modifier) {
     val viewModel: HomeViewModel = viewModel()
-    val feedPosts = viewModel.feedPosts.observeAsState(emptyList()).value
+    val newsFeedScreenState =
+        viewModel.newsFeedScreenState.observeAsState(NewsFeedScreenState.Initial).value
 
-    LazyColumn(modifier = modifier) {
+    val currentState = newsFeedScreenState
+    when (currentState) {
+        is NewsFeedScreenState.Posts -> {
+            NewsFeed(currentState.feedPosts, viewModel)
+        }
+
+        is NewsFeedScreenState.Initial -> {
+
+        }
+    }
+}
+
+@Composable
+private fun NewsFeed(feedPosts: List<FeedPost>, viewModel: HomeViewModel) {
+    LazyColumn() {
         items(items = feedPosts, key = { it.id }) { feedPost ->
             val swipeToDismissBoxState = rememberSwipeToDismissBoxState(
                 confirmValueChange = {
