@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.vknewsclient.domain.models.FeedPost
 import com.example.vknewsclient.domain.models.StatisticItem
+import com.example.vknewsclient.domain.state.NewsFeedScreenState
 
 class HomeViewModel : ViewModel() {
     private val initList = mutableListOf<FeedPost>().apply {
@@ -13,25 +14,31 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    private val _feedPosts = MutableLiveData<List<FeedPost>>(initList)
-    val feedPosts: LiveData<List<FeedPost>> get() = _feedPosts
+    private val initState = NewsFeedScreenState.Posts(initList)
+    private val _newsFeedScreenState = MutableLiveData<NewsFeedScreenState>(initState)
+    val newsFeedScreenState: LiveData<NewsFeedScreenState> get() = _newsFeedScreenState
 
     fun changeStatisticsFeedPost(
         feedPost: FeedPost,
         statisticItem: StatisticItem,
     ) {
-        val modifiedFeedPosts = _feedPosts.value?.toMutableList() ?: mutableListOf()
-        modifiedFeedPosts.replaceAll { oldFeedPost ->
-            if (oldFeedPost.id == feedPost.id) {
-                val newStatistics =
-                    updateCountStatisticItem(feedPost.statistics, statisticItem)
-                oldFeedPost.copy(statistics = newStatistics)
-            } else {
-                oldFeedPost
+        var currentState = _newsFeedScreenState.value
+        if (currentState is NewsFeedScreenState.Posts) {
+            val modifiedFeedPosts = currentState.feedPosts.toMutableList()
+            modifiedFeedPosts.replaceAll { oldFeedPost ->
+                if (oldFeedPost.id == feedPost.id) {
+                    val newStatistics =
+                        updateCountStatisticItem(feedPost.statistics, statisticItem)
+                    oldFeedPost.copy(statistics = newStatistics)
+                } else {
+                    oldFeedPost
+                }
             }
+
+            currentState = currentState.copy(feedPosts = modifiedFeedPosts)
+            _newsFeedScreenState.value = currentState
         }
 
-        _feedPosts.value = modifiedFeedPosts
     }
 
     private fun updateCountStatisticItem(
@@ -51,9 +58,13 @@ class HomeViewModel : ViewModel() {
     }
 
     fun deleteFeedPost(feedPost: FeedPost) {
-        val modifiedFeedPosts = _feedPosts.value?.toMutableList() ?: mutableListOf()
-        modifiedFeedPosts.remove(feedPost)
+        var currentState = _newsFeedScreenState.value
+        if (currentState is NewsFeedScreenState.Posts) {
+            val modifiedFeedPosts = currentState.feedPosts.toMutableList()
+            modifiedFeedPosts.remove(feedPost)
 
-        _feedPosts.value = modifiedFeedPosts
+            currentState = currentState.copy(feedPosts = modifiedFeedPosts)
+            _newsFeedScreenState.value = currentState
+        }
     }
 }
