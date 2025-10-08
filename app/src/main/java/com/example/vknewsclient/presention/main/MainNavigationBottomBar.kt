@@ -10,8 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.vknewsclient.navigation.NavigationState
 import com.example.vknewsclient.navigation.rememberNavigationState
 import com.example.vknewsclient.ui.theme.VkNewsClientTheme
@@ -20,7 +22,7 @@ import com.example.vknewsclient.ui.theme.VkNewsClientTheme
 fun MainNavigationBottomBar(navigationState: NavigationState) {
 
     val navBackStackEntry = navigationState.navController.currentBackStackEntryAsState()
-    val currentDestinationRoute = navBackStackEntry.value?.destination?.route
+    val currentDestination = navBackStackEntry.value?.destination
 
     val navigationItems = listOf<NavigationItem>(
         NavigationItem.Home, NavigationItem.Favorite,
@@ -35,8 +37,11 @@ fun MainNavigationBottomBar(navigationState: NavigationState) {
 
         BottomAppBar {
             navigationItems.forEach { item ->
+                val selected = currentDestination?.hierarchy?.any {
+                    it.route == item.screen.route
+                } == true
                 NavigationBarItem(
-                    selected = currentDestinationRoute == item.screen.route,
+                    selected = selected,
                     onClick = { navigationState.navigateTo(item.screen.route) },
                     icon = { Icon(imageVector = item.imageVector, contentDescription = null) },
                     label = { Text(text = item.title) }
