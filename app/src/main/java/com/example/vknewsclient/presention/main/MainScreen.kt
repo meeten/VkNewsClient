@@ -10,11 +10,13 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavBackStackEntry
 import com.example.vknewsclient.domain.models.FeedPost
 import com.example.vknewsclient.navigation.AppNavGraph
 import com.example.vknewsclient.navigation.rememberNavigationState
 import com.example.vknewsclient.presention.comment.CommentScreen
 import com.example.vknewsclient.presention.home.HomeScreen
+import kotlinx.coroutines.selects.selectUnbiased
 
 @Composable
 fun MainScreen() {
@@ -30,7 +32,11 @@ fun MainScreen() {
                     navigationState.navigateToComment(feedPost)
                 }
             },
-            commentContentScreen = { CommentScreen(it) },
+            commentContentScreen = {
+                CommentScreen(it) {
+                    navigationState.navController.popBackStack()
+                }
+            },
             favoriteContentScreen = { TestNavigationState("favorite") },
             profileContentScreen = { TestNavigationState("profile") }
         )
