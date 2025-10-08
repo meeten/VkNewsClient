@@ -5,6 +5,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.vknewsclient.domain.models.FeedPost
 
 class NavigationState(val navController: NavHostController) {
     fun navigateTo(route: String) {
@@ -16,6 +17,10 @@ class NavigationState(val navController: NavHostController) {
             launchSingleTop = true
             restoreState = true
         }
+    }
+
+    fun navigateToComment(feedPost: FeedPost) {
+        navController.navigate(Screen.Comment.createRouteWithArgs(feedPost))
     }
 }
 
