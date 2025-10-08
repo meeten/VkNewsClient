@@ -14,7 +14,7 @@ import com.example.vknewsclient.domain.state.NewsFeedScreenState
 import com.example.vknewsclient.presention.home.news.PostCard
 
 @Composable
-fun HomeScreen(modifier: Modifier) {
+fun HomeScreen(modifier: Modifier, onCommentClickListener: (FeedPost) -> Unit) {
     val viewModel: HomeViewModel = viewModel()
     val newsFeedScreenState =
         viewModel.newsFeedScreenState.observeAsState(NewsFeedScreenState.Initial).value
@@ -22,7 +22,7 @@ fun HomeScreen(modifier: Modifier) {
     val currentState = newsFeedScreenState
     when (currentState) {
         is NewsFeedScreenState.Posts -> {
-            NewsFeed(currentState.feedPosts, viewModel)
+            NewsFeed(currentState.feedPosts, viewModel, onCommentClickListener)
         }
 
         is NewsFeedScreenState.Initial -> {
@@ -32,7 +32,11 @@ fun HomeScreen(modifier: Modifier) {
 }
 
 @Composable
-private fun NewsFeed(feedPosts: List<FeedPost>, viewModel: HomeViewModel) {
+private fun NewsFeed(
+    feedPosts: List<FeedPost>,
+    viewModel: HomeViewModel,
+    onCommentClickListener: (FeedPost) -> Unit,
+) {
     LazyColumn() {
         items(items = feedPosts, key = { it.id }) { feedPost ->
             val swipeToDismissBoxState = rememberSwipeToDismissBoxState(
@@ -54,7 +58,7 @@ private fun NewsFeed(feedPosts: List<FeedPost>, viewModel: HomeViewModel) {
                 PostCard(
                     feedPost = feedPost,
                     onLikeClickListener = { viewModel.changeStatisticsFeedPost(feedPost, it) },
-                    onCommentClickListener = { viewModel.changeStatisticsFeedPost(feedPost, it) },
+                    onCommentClickListener = { onCommentClickListener(feedPost) },
                     onShareClickListener = { viewModel.changeStatisticsFeedPost(feedPost, it) },
                     onViewClickListener = { viewModel.changeStatisticsFeedPost(feedPost, it) }
                 )
@@ -62,3 +66,4 @@ private fun NewsFeed(feedPosts: List<FeedPost>, viewModel: HomeViewModel) {
         }
     }
 }
+
