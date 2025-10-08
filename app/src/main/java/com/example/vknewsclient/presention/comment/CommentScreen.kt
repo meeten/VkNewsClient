@@ -39,7 +39,7 @@ import com.example.vknewsclient.ui.theme.VkNewsClientTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommentScreen(feedPost: FeedPost) {
+fun CommentScreen(feedPost: FeedPost, onArrowBackClickListener: () -> Unit) {
     val viewModel: CommentViewModel = viewModel(factory = CommentViewModelFactory(feedPost))
     val commentScreenState = viewModel.commentScreenState.observeAsState().value
 
@@ -49,7 +49,9 @@ fun CommentScreen(feedPost: FeedPost) {
                 TopAppBar(
                     title = { Text(text = "Comments for FeedPost id: ${commentScreenState.feedPost.id}") },
                     navigationIcon = {
-                        IconButton(onClick = {}) {
+                        IconButton(onClick = {
+                            onArrowBackClickListener()
+                        }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = null
@@ -116,7 +118,7 @@ fun CommentScreenPreviewLight() {
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.primary)
         ) {
-            CommentScreen(FeedPost(0))
+            CommentScreen(FeedPost(0), {})
         }
     }
 }
@@ -130,7 +132,7 @@ fun CommentScreenPreviewDark() {
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.primary)
         ) {
-            CommentScreen(FeedPost(0))
+            CommentScreen(FeedPost(0), {})
         }
     }
 }
