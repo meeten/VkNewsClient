@@ -20,7 +20,10 @@ fun AuthContent() {
             viewModel.registration()
         })
 
-        is AuthState.Authenticated -> MainScreen()
+        is AuthState.Authenticated -> {
+            Log.d("AccessTokenAccessToken", "access token: ${authState.accessToken.token}")
+            MainScreen()
+        }
 
         is AuthState.Error -> {
             Log.e("Authentication Error", authState.failDescription)
