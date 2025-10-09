@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CommentsDto(
-    @SerialName("count") val count: String,
+    @SerialName("count") val count: Int,
 )

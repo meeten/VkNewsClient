@@ -6,11 +6,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class FeedPostDto(
     @SerialName("id") val id: String,
-    @SerialName("date") val date: Int,
+    @SerialName("from_id") val fromId: Long,
+    @SerialName("date") val date: String,
     @SerialName("text") val text: String,
     @SerialName("likes") val likesDto: LikesDto,
     @SerialName("comments") val commentsDto: CommentsDto,
     @SerialName("reports") val reportsDto: ReportsDto,
     @SerialName("views") val viewsDto: ViewsDto,
-    @SerialName("attachments") val attachmentsDto: List<AttachmentsDto>,
+    @SerialName("attachments") val attachmentsDto: List<AttachmentsDto>?,
 )
