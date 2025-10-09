@@ -9,12 +9,14 @@ import com.vk.id.AccessToken
 import com.vk.id.VKID
 import com.vk.id.VKIDAuthFail
 import com.vk.id.auth.VKIDAuthCallback
+import com.vk.id.auth.VKIDAuthParams
 import com.vk.id.refresh.VKIDRefreshTokenCallback
 import com.vk.id.refresh.VKIDRefreshTokenFail
 import com.vk.id.refresh.VKIDRefreshTokenFail.FailedApiCall
 import com.vk.id.refresh.VKIDRefreshTokenFail.FailedOAuthState
 import com.vk.id.refresh.VKIDRefreshTokenFail.NotAuthenticated
 import com.vk.id.refresh.VKIDRefreshTokenFail.RefreshTokenExpired
+import com.vk.id.refresh.VKIDRefreshTokenParams
 import kotlinx.coroutines.launch
 
 class AuthViewModel(val vkid: VKID) : ViewModel() {
@@ -27,7 +29,9 @@ class AuthViewModel(val vkid: VKID) : ViewModel() {
 
     private fun checkToken() {
         viewModelScope.launch {
-            vkid.refreshToken(callback = object : VKIDRefreshTokenCallback {
+            vkid.refreshToken(params = VKIDRefreshTokenParams {
+                setOf("friends", "wall")
+            }, callback = object : VKIDRefreshTokenCallback {
                 override fun onSuccess(token: AccessToken) {
                     _authState.value = AuthState.Authenticated(token)
                 }
@@ -80,7 +84,9 @@ class AuthViewModel(val vkid: VKID) : ViewModel() {
         }
 
         viewModelScope.launch {
-            vkid.authorize(vkidAuthCallback)
+            vkid.authorize(vkidAuthCallback, params = VKIDAuthParams {
+                scopes = setOf("friends", "wall")
+            })
         }
     }
 }
