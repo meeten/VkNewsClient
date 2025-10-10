@@ -1,22 +1,38 @@
 package com.example.vknewsclient.presention.home
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.vknewsclient.data.mapper.NewsFeedPostMapper
+import com.example.vknewsclient.data.network.ApiFactory
 import com.example.vknewsclient.domain.models.FeedPost
 import com.example.vknewsclient.domain.models.StatisticItem
 import com.example.vknewsclient.domain.state.NewsFeedScreenState
+import com.vk.id.VKID
+import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {
-    private val initList = mutableListOf<FeedPost>().apply {
-        repeat(100) {
-            add(FeedPost(id = it))
-        }
-    }
-
-    private val initState = NewsFeedScreenState.Posts(initList)
+    private val initState = NewsFeedScreenState.Initial
     private val _newsFeedScreenState = MutableLiveData<NewsFeedScreenState>(initState)
     val newsFeedScreenState: LiveData<NewsFeedScreenState> get() = _newsFeedScreenState
+
+    init {
+        loadPostsByDomain()
+    }
+
+    private val mapper = NewsFeedPostMapper()
+    fun loadPostsByDomain() {
+        viewModelScope.launch {
+            val token = VKID.instance.accessToken?.token ?: return@launch
+            val domain = "rhymes"
+            val responseDto = ApiFactory.apiService.loadPostsByDomain(token, domain)
+
+            val newsFeed = mapper.mapResponseToPosts(responseDto)
+            _newsFeedScreenState.value = NewsFeedScreenState.Posts(newsFeed)
+        }
+    }
 
     fun changeStatisticsFeedPost(
         feedPost: FeedPost,
@@ -28,7 +44,7 @@ class HomeViewModel : ViewModel() {
             modifiedFeedPosts.replaceAll { oldFeedPost ->
                 if (oldFeedPost.id == feedPost.id) {
                     val newStatistics =
-                        updateCountStatisticItem(feedPost.statistics, statisticItem)
+                        updateCountStatisticItem(feedPost.statistics!!, statisticItem)
                     oldFeedPost.copy(statistics = newStatistics)
                 } else {
                     oldFeedPost
