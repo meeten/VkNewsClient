@@ -1,12 +1,9 @@
 package com.example.vknewsclient.data.model
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.google.gson.annotations.SerializedName
 
-@Serializable
 class GroupDto(
-    @SerialName("id") val id: Long,
-    @SerialName("name") val name: String,
-    @SerialName("photo_200") val photoGroupUrl: String,
+    @SerializedName("name") val name: String,
+    @SerializedName("photo_200") val photoGroupUrl: String,
 )
 

@@ -1,9 +1,7 @@
 package com.example.vknewsclient.data.model
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.google.gson.annotations.SerializedName
 
-@Serializable
 class PhotoUrlDto(
-    @SerialName("url") val photoUrl: String,
+    @SerializedName("url") val photoUrl: String,
 )

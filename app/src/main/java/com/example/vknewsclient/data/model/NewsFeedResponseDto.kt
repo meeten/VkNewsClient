@@ -1,9 +1,7 @@
 package com.example.vknewsclient.data.model
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.google.gson.annotations.SerializedName
 
-@Serializable
 data class NewsFeedResponseDto(
-    @SerialName("response") val newsFeedContent: NewsFeedContentDto,
+    @SerializedName("response") val newsFeedContent: NewsFeedContentDto,
 )

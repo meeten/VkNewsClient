@@ -1,9 +1,7 @@
 package com.example.vknewsclient.data.model
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.google.gson.annotations.SerializedName
 
-@Serializable
 data class CommentsDto(
-    @SerialName("count") val count: Int,
+    @SerializedName("count") val count: Int,
 )

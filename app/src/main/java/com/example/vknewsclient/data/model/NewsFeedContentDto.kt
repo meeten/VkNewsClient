@@ -1,10 +1,9 @@
 package com.example.vknewsclient.data.model
 
-import kotlinx.serialization.SerialName
+import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
-@Serializable
 data class NewsFeedContentDto(
-    @SerialName("items") val posts: List<FeedPostDto>,
-    @SerialName("groups") val groups: List<GroupDto>,
+    @SerializedName("items") val posts: List<FeedPostDto>,
+    @SerializedName("groups") val groups: List<GroupDto>,
 )

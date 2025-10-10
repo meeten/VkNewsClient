@@ -1,17 +1,15 @@
 package com.example.vknewsclient.data.model
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.google.gson.annotations.SerializedName
 
-@Serializable
 data class FeedPostDto(
-    @SerialName("id") val id: String,
-    @SerialName("from_id") val fromId: Long,
-    @SerialName("date") val date: String,
-    @SerialName("text") val text: String,
-    @SerialName("likes") val likesDto: LikesDto,
-    @SerialName("comments") val commentsDto: CommentsDto,
-    @SerialName("reports") val reportsDto: ReportsDto,
-    @SerialName("views") val viewsDto: ViewsDto,
-    @SerialName("attachments") val attachmentsDto: List<AttachmentsDto>?,
+    @SerializedName("id") val id: Int,
+    @SerializedName("from_id") val fromId: Int,
+    @SerializedName("date") val date: Int,
+    @SerializedName("text") val text: String,
+    @SerializedName("likes") val likesDto: LikesDto,
+    @SerializedName("comments") val commentsDto: CommentsDto,
+    @SerializedName("reports") val repostsDto: RepostsDto,
+    @SerializedName("views") val viewsDto: ViewsDto,
+    @SerializedName("attachments") val attachmentsDto: List<AttachmentsDto>?,
 )
