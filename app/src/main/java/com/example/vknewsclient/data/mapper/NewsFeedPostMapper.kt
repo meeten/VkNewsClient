@@ -35,7 +35,7 @@ class NewsFeedPostMapper {
                     ),
                     StatisticItem(
                         type = StatisticItemType.SHARES,
-                        count = post.reportsDto.count
+                        count = post.repostsDto.count
                     ),
                     StatisticItem(
                         type = StatisticItemType.VIEWS,
