@@ -23,8 +23,13 @@ class NewsFeedPostMapper {
                 publicName = group.name,
                 publicationTime = post.date,
                 postContent = post.text,
-                postContentImageUrl = post.attachmentsDto?.lastOrNull()?.photo?.photoUrls?.lastOrNull()?.photoUrl,
+                postContentImageUrl = post.attachmentsDto?.lastOrNull()?.photo?.photoUrls?.lastOrNull()?.photoUrl
+                    ?: continue,
                 statistics = listOf<StatisticItem>(
+                    StatisticItem(
+                        type = StatisticItemType.VIEWS,
+                        count = post.viewsDto.count
+                    ),
                     StatisticItem(
                         type = StatisticItemType.LIKES,
                         count = post.likesDto.count
@@ -36,10 +41,6 @@ class NewsFeedPostMapper {
                     StatisticItem(
                         type = StatisticItemType.SHARES,
                         count = post.repostsDto.count
-                    ),
-                    StatisticItem(
-                        type = StatisticItemType.VIEWS,
-                        count = post.viewsDto.count
                     )
                 )
             )
