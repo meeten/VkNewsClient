@@ -43,6 +43,8 @@ class NewsFeedPostMapper {
                     )
                 )
             )
+
+            result.add(feedPost)
         }
 
         return result
