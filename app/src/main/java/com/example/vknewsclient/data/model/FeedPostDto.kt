@@ -9,7 +9,7 @@ data class FeedPostDto(
     @SerializedName("text") val text: String,
     @SerializedName("likes") val likesDto: LikesDto,
     @SerializedName("comments") val commentsDto: CommentsDto,
-    @SerializedName("reports") val repostsDto: RepostsDto,
+    @SerializedName("reposts") val repostsDto: RepostsDto,
     @SerializedName("views") val viewsDto: ViewsDto,
     @SerializedName("attachments") val attachmentsDto: List<AttachmentsDto>?,
 )
