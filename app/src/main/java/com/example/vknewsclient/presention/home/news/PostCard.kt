@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -27,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.vknewsclient.domain.models.FeedPost
 import com.example.vknewsclient.domain.models.StatisticItem
 import com.example.vknewsclient.domain.models.StatisticItemType
@@ -67,8 +69,8 @@ private fun PostHeader(feedPost: FeedPost) {
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(feedPost.publicImage),
+        AsyncImage(
+            model = feedPost.publicImageUrl,
             contentDescription = null,
             modifier = Modifier
                 .size(60.dp)
@@ -88,7 +90,7 @@ private fun PostHeader(feedPost: FeedPost) {
             Spacer(modifier = Modifier.height(5.dp))
 
             Text(
-                text = feedPost.publicationTime,
+                text = feedPost.publicationTime.toString(),
                 style = TextStyle(
                     fontSize = 16.sp, color = MaterialTheme.colorScheme.onSecondary
                 )
@@ -110,12 +112,12 @@ private fun Post(feedPost: FeedPost) {
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        Image(
-            painter = painterResource(feedPost.postContentImage),
+        AsyncImage(
+            model = feedPost.postContentImageUrl,
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
-                .size(400.dp),
+                .wrapContentHeight(),
             contentScale = ContentScale.FillWidth
         )
     }
