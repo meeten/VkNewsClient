@@ -6,6 +6,6 @@ data class FeedPost(
     val publicName: String,
     val publicationTime: Int,
     val postContent: String,
-    val postContentImageUrl: String?,
+    val postContentImageUrl: String,
     val statistics: List<StatisticItem>,
 )
