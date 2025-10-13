@@ -138,43 +138,47 @@ private fun Statistics(
 
     Row(modifier = Modifier.padding(10.dp)) {
         Row(modifier = Modifier.weight(1f)) {
-            ImageTextLayout(likes.type.src, likes.count, {
+            ImageTextLayout(
+                likes.src,
+                likes.count.toString()
+            ) {
                 onLikeClickListener(likes)
-            })
+            }
 
             Spacer(modifier = Modifier.width(14.dp))
 
-            ImageTextLayout(comments.type.src, comments.count, {
+            ImageTextLayout(comments.src, comments.count.toString()) {
                 onCommentClickListener(comments)
-            })
+            }
 
             Spacer(modifier = Modifier.width(14.dp))
 
-            ImageTextLayout(shares.type.src, shares.count, {
+            ImageTextLayout(shares.src, shares.count.toString()) {
                 onShareClickListener(shares)
-            })
+            }
         }
 
-        ImageTextLayout(views.type.src, views.count, {
+        ImageTextLayout(views.src, reducingLargeNumber(views.count)) {
             onViewClickListener(views)
-        })
+        }
     }
 }
 
 @Composable
-private fun ImageTextLayout(src: Int, count: Int, onItemClickListener: () -> Unit) {
+private fun ImageTextLayout(src: Int, count: String, onItemClickListener: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
         onItemClickListener()
     }) {
         Image(
             painter = painterResource(src),
-            contentDescription = null
+            contentDescription = null,
+            modifier = Modifier.wrapContentHeight()
         )
 
         Spacer(modifier = Modifier.width(7.dp))
 
         Text(
-            text = "$count",
+            text = count,
             style = TextStyle(
                 fontSize = 16.sp, color = MaterialTheme.colorScheme.onSecondary
             )
@@ -185,4 +189,14 @@ private fun ImageTextLayout(src: Int, count: Int, onItemClickListener: () -> Uni
 private fun List<StatisticItem>.findStatisticItemByType(type: StatisticItemType): StatisticItem {
     return this.firstOrNull { it.type == type }
         ?: throw IllegalStateException("Undefined type: $type")
+}
+
+private fun reducingLargeNumber(number: Int): String {
+    var result = number.toString()
+
+    if (number > 1000) {
+        result = String.format("%.1fK", number / 1000f)
+    }
+
+    return result
 }
