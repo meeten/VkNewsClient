@@ -57,10 +57,10 @@ private fun NewsFeed(
             ) {
                 PostCard(
                     feedPost = feedPost,
-                    onLikeClickListener = { viewModel.changeStatisticsFeedPost(feedPost, it) },
+                    onLikeClickListener = { viewModel.toggleLike(feedPost) },
                     onCommentClickListener = { onCommentClickListener(feedPost) },
-                    onShareClickListener = { viewModel.changeStatisticsFeedPost(feedPost, it) },
-                    onViewClickListener = { viewModel.changeStatisticsFeedPost(feedPost, it) }
+                    onShareClickListener = { viewModel.incrementStatistics(feedPost, it) },
+                    onViewClickListener = { viewModel.incrementStatistics(feedPost, it) }
                 )
             }
         }
