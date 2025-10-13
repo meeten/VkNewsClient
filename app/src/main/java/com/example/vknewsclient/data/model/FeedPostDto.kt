@@ -12,4 +12,5 @@ data class FeedPostDto(
     @SerializedName("reposts") val repostsDto: RepostsDto,
     @SerializedName("views") val viewsDto: ViewsDto,
     @SerializedName("attachments") val attachmentsDto: List<AttachmentsDto>?,
+    @SerializedName("is_favorite") val isFavorite: Boolean
 )

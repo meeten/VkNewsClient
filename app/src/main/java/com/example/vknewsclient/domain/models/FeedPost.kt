@@ -7,5 +7,6 @@ data class FeedPost(
     val publicationTime: String,
     val postContent: String,
     val postContentImageUrl: String,
+    val isFavorite: Boolean,
     val statistics: List<StatisticItem>,
 )
