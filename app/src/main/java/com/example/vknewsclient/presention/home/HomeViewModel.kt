@@ -35,22 +35,11 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun changeStatisticsFeedPost(feedPost: FeedPost) {
-        var currentState = _newsFeedScreenState.value
-        if (currentState is NewsFeedScreenState.Posts) {
-            val modifierFeedPosts = currentState.feedPosts.toMutableList()
-            modifierFeedPosts.replaceAll { oldFeedPost ->
-                if (oldFeedPost.id == feedPost.id) {
-                    val newStatistics =
-                        updateBackgroundImageLike(feedPost.statistics, feedPost.isFavorite)
-                    oldFeedPost.copy(isFavorite = !feedPost.isFavorite, statistics = newStatistics)
-                } else {
-                    oldFeedPost
-                }
-            }
-
-            currentState = currentState.copy(feedPosts = modifierFeedPosts)
-            _newsFeedScreenState.value = currentState
+    fun toggleLike(feedPost: FeedPost) {
+        updateFeedPost(feedPost) { oldFeedPost ->
+            val newStatistics =
+                updateBackgroundImageLike(oldFeedPost.statistics, oldFeedPost.isFavorite)
+            oldFeedPost.copy(isFavorite = !oldFeedPost.isFavorite, statistics = newStatistics)
         }
     }
 
@@ -75,27 +64,11 @@ class HomeViewModel : ViewModel() {
         return modifiedStatistics
     }
 
-    fun changeStatisticsFeedPost(
-        feedPost: FeedPost,
-        statisticItem: StatisticItem,
-    ) {
-        var currentState = _newsFeedScreenState.value
-        if (currentState is NewsFeedScreenState.Posts) {
-            val modifiedFeedPosts = currentState.feedPosts.toMutableList()
-            modifiedFeedPosts.replaceAll { oldFeedPost ->
-                if (oldFeedPost.id == feedPost.id) {
-                    val newStatistics =
-                        updateCountStatisticItem(feedPost.statistics, statisticItem)
-                    oldFeedPost.copy(statistics = newStatistics)
-                } else {
-                    oldFeedPost
-                }
-            }
-
-            currentState = currentState.copy(feedPosts = modifiedFeedPosts)
-            _newsFeedScreenState.value = currentState
+    fun incrementStatistics(feedPost: FeedPost, statisticItem: StatisticItem) {
+        updateFeedPost(feedPost) { oldFeedPost ->
+            val newStatistics = updateCountStatisticItem(oldFeedPost.statistics, statisticItem)
+            oldFeedPost.copy(statistics = newStatistics)
         }
-
     }
 
     private fun updateCountStatisticItem(
@@ -112,6 +85,19 @@ class HomeViewModel : ViewModel() {
         }
 
         return modifiedStatistic
+    }
+
+    private fun updateFeedPost(feedPost: FeedPost, update: (FeedPost) -> FeedPost) {
+        var currentState = _newsFeedScreenState.value
+        if (currentState is NewsFeedScreenState.Posts) {
+            val modifierFeedPosts = currentState.feedPosts.toMutableList()
+            modifierFeedPosts.replaceAll { oldFeedPost ->
+                if (oldFeedPost.id == feedPost.id) update(oldFeedPost) else oldFeedPost
+            }
+
+            currentState = currentState.copy(feedPosts = modifierFeedPosts)
+            _newsFeedScreenState.value = currentState
+        }
     }
 
     fun deleteFeedPost(feedPost: FeedPost) {
