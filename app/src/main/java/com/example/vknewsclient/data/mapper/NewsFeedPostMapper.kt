@@ -1,5 +1,6 @@
 package com.example.vknewsclient.data.mapper
 
+import com.example.vknewsclient.R
 import com.example.vknewsclient.data.model.NewsFeedResponseDto
 import com.example.vknewsclient.domain.models.FeedPost
 import com.example.vknewsclient.domain.models.StatisticItem
@@ -28,21 +29,26 @@ class NewsFeedPostMapper {
                 postContent = post.text,
                 postContentImageUrl = post.attachmentsDto?.lastOrNull()?.photo?.photoUrls?.lastOrNull()?.photoUrl
                     ?: continue,
+                isFavorite = post.isFavorite,
                 statistics = listOf<StatisticItem>(
                     StatisticItem(
                         type = StatisticItemType.VIEWS,
+                        src = R.drawable.ic_views_count,
                         count = post.viewsDto.count
                     ),
                     StatisticItem(
                         type = StatisticItemType.LIKES,
+                        src = if (post.isFavorite) R.drawable.ic_like_set else R.drawable.ic_like,
                         count = post.likesDto.count
                     ),
                     StatisticItem(
                         type = StatisticItemType.COMMENTS,
+                        src = R.drawable.ic_comment,
                         count = post.commentsDto.count
                     ),
                     StatisticItem(
                         type = StatisticItemType.SHARES,
+                        src = R.drawable.ic_share,
                         count = post.repostsDto.count
                     )
                 )
