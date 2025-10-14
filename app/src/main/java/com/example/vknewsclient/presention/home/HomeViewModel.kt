@@ -4,11 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vknewsclient.R
 import com.example.vknewsclient.data.repository.NewsFeedRepository
 import com.example.vknewsclient.domain.models.FeedPost
 import com.example.vknewsclient.domain.models.StatisticItem
-import com.example.vknewsclient.domain.models.StatisticItemType
 import com.example.vknewsclient.domain.state.NewsFeedScreenState
 import kotlinx.coroutines.launch
 
@@ -30,33 +28,11 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun toggleLike(feedPost: FeedPost) {
-        updateFeedPost(feedPost) { oldFeedPost ->
-            val newStatistics =
-                updateBackgroundImageLike(oldFeedPost.statistics, oldFeedPost.isFavorite)
-            oldFeedPost.copy(isFavorite = !oldFeedPost.isFavorite, statistics = newStatistics)
+    fun changeLikeStatus(feedPost: FeedPost) {
+        viewModelScope.launch {
+            repository.changeLikeStatus(feedPost)
+            _newsFeedScreenState.value = NewsFeedScreenState.Posts(repository.feedPosts)
         }
-    }
-
-    private fun updateBackgroundImageLike(
-        statistics: List<StatisticItem>,
-        isFavorite: Boolean,
-    ): List<StatisticItem> {
-        val modifiedStatistics = statistics.toMutableList()
-        modifiedStatistics.replaceAll { oldStatistics ->
-            if (oldStatistics.type == StatisticItemType.LIKES) {
-                oldStatistics.copy(
-                    src =
-                        if (isFavorite) R.drawable.ic_like else R.drawable.ic_like_set,
-                    count =
-                        if (isFavorite) oldStatistics.count - 1 else oldStatistics.count + 1
-                )
-            } else {
-                oldStatistics
-            }
-        }
-
-        return modifiedStatistics
     }
 
     fun incrementStatistics(feedPost: FeedPost, statisticItem: StatisticItem) {
