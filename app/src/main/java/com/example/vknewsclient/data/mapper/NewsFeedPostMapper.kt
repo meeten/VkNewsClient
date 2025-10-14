@@ -23,13 +23,14 @@ class NewsFeedPostMapper {
             val group = groups.find { it.id == post.fromId.absoluteValue } ?: break
             val feedPost = FeedPost(
                 id = post.id,
+                ownerId = post.ownerId,
                 publicImageUrl = group.photoGroupUrl,
                 publicName = group.name,
                 publicationTime = convertTimestampInDate(post.date),
                 postContent = post.text,
                 postContentImageUrl = post.attachmentsDto?.lastOrNull()?.photo?.photoUrls?.lastOrNull()?.photoUrl
                     ?: continue,
-                isFavorite = post.isFavorite,
+                isLiked = post.likesDto.idLiked == 1,
                 statistics = listOf<StatisticItem>(
                     StatisticItem(
                         type = StatisticItemType.VIEWS,
@@ -38,7 +39,7 @@ class NewsFeedPostMapper {
                     ),
                     StatisticItem(
                         type = StatisticItemType.LIKES,
-                        src = if (post.isFavorite) R.drawable.ic_like_set else R.drawable.ic_like,
+                        src = if (post.likesDto.idLiked == 1) R.drawable.ic_like_set else R.drawable.ic_like,
                         count = post.likesDto.count
                     ),
                     StatisticItem(
