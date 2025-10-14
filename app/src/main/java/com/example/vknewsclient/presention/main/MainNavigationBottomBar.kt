@@ -6,6 +6,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,7 +45,13 @@ fun MainNavigationBottomBar(navigationState: NavigationState) {
                     selected = selected,
                     onClick = { navigationState.navigateTo(item.screen.route) },
                     icon = { Icon(imageVector = item.imageVector, contentDescription = null) },
-                    label = { Text(text = item.title) }
+                    label = { Text(text = item.title) },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                        selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                        unselectedTextColor = MaterialTheme.colorScheme.secondary,
+                        unselectedIconColor = MaterialTheme.colorScheme.secondary,
+                    )
                 )
             }
         }
