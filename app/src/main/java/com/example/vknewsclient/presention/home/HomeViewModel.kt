@@ -5,32 +5,27 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vknewsclient.R
-import com.example.vknewsclient.data.mapper.NewsFeedPostMapper
-import com.example.vknewsclient.data.network.ApiFactory
+import com.example.vknewsclient.data.repository.NewsFeedRepository
 import com.example.vknewsclient.domain.models.FeedPost
 import com.example.vknewsclient.domain.models.StatisticItem
 import com.example.vknewsclient.domain.models.StatisticItemType
 import com.example.vknewsclient.domain.state.NewsFeedScreenState
-import com.vk.id.VKID
 import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {
-    private val initState = NewsFeedScreenState.Initial
-    private val _newsFeedScreenState = MutableLiveData<NewsFeedScreenState>(initState)
+
+    private val repository = NewsFeedRepository
+    private val _newsFeedScreenState =
+        MutableLiveData<NewsFeedScreenState>(NewsFeedScreenState.Initial)
     val newsFeedScreenState: LiveData<NewsFeedScreenState> get() = _newsFeedScreenState
 
     init {
         loadPostsByDomain()
     }
 
-    private val mapper = NewsFeedPostMapper()
     fun loadPostsByDomain() {
         viewModelScope.launch {
-            val token = VKID.instance.accessToken?.token ?: return@launch
-            val domain = "rhymes"
-            val responseDto = ApiFactory.apiService.loadPostsByDomain(token, domain)
-
-            val newsFeed = mapper.mapResponseToPosts(responseDto)
+            val newsFeed = repository.loadNewsFeed()
             _newsFeedScreenState.value = NewsFeedScreenState.Posts(newsFeed)
         }
     }
