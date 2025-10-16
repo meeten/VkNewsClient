@@ -58,7 +58,7 @@ private fun NewsFeedContent(
             bottom = 100.dp
         )
     ) {
-        items(items = feedPosts) { feedPost ->
+        items(items = feedPosts, key = { it.id }) { feedPost ->
             PostCard(
                 feedPost = feedPost,
                 onLikeClickListener = { viewModel.changeLikeStatus(feedPost) },
