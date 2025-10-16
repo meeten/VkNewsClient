@@ -20,7 +20,7 @@ object NewsFeedRepository {
 
     var nextFrom: String? = null
     suspend fun loadNewsFeed(): List<FeedPost> {
-        if (nextFrom == null && _feedPosts.isNotEmpty()) return listOf()
+        if (nextFrom == null && _feedPosts.isNotEmpty()) return feedPosts
 
         val startFrom = nextFrom
 
@@ -40,7 +40,7 @@ object NewsFeedRepository {
         val newsFeed = mapper.mapResponseToPosts(newsFeedResponseDto)
 
         _feedPosts.addAll(newsFeed)
-        return _feedPosts
+        return feedPosts
     }
 
     private fun getAccessToken(): String {
