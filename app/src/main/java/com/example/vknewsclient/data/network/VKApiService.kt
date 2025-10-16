@@ -6,23 +6,23 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface VKApiService {
-    @GET("wall.get?v=5.199&extended=true&count=50")
-    suspend fun loadPostsByDomain(
+
+    @GET("newsfeed.get?v=5.199&filters=post")
+    suspend fun loadPosts(
         @Query("access_token") accessToken: String,
-        @Query("domain") domain: String,
     ): NewsFeedResponseDto
 
     @GET("likes.add?v=5.199&type=post")
     suspend fun addLike(
         @Query("access_token") accessToken: String,
-        @Query("owner_id") ownerId: Int,
-        @Query("item_id") itemId: Int,
+        @Query("owner_id") ownerId: Long,
+        @Query("item_id") itemId: Long,
     ): LikesResponseDto
 
     @GET("likes.delete?v=5.199&type=post")
     suspend fun deleteLike(
         @Query("access_token") accessToken: String,
-        @Query("owner_id") ownerId: Int,
-        @Query("item_id") itemId: Int,
+        @Query("owner_id") ownerId: Long,
+        @Query("item_id") itemId: Long,
     ): LikesResponseDto
 }

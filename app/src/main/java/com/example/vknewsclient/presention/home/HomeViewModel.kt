@@ -18,10 +18,10 @@ class HomeViewModel : ViewModel() {
     val newsFeedScreenState: LiveData<NewsFeedScreenState> get() = _newsFeedScreenState
 
     init {
-        loadPostsByDomain()
+        loadPosts()
     }
 
-    fun loadPostsByDomain() {
+    fun loadPosts() {
         viewModelScope.launch {
             val newsFeed = repository.loadNewsFeed()
             _newsFeedScreenState.value = NewsFeedScreenState.Posts(newsFeed)

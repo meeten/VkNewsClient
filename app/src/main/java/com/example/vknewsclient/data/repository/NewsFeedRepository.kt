@@ -18,9 +18,8 @@ object NewsFeedRepository {
     private val mapper = NewsFeedPostMapper()
 
     suspend fun loadNewsFeed(): List<FeedPost> {
-        val newsFeedResponseDto = apiFactory.apiService.loadPostsByDomain(
-            accessToken = getAccessToken(),
-            domain = "rhymes"
+        val newsFeedResponseDto = apiFactory.apiService.loadPosts(
+            accessToken = getAccessToken()
         )
         val newsFeed = mapper.mapResponseToPosts(newsFeedResponseDto)
 
@@ -58,9 +57,17 @@ object NewsFeedRepository {
         var likesResponseDto: LikesResponseDto? = null
         likesResponseDto =
             if (feedPost.isLiked)
-                ApiFactory.apiService.deleteLike(getAccessToken(), feedPost.ownerId, feedPost.id)
+                ApiFactory.apiService.deleteLike(
+                    getAccessToken(),
+                    feedPost.ownerId,
+                    feedPost.id
+                )
             else
-                ApiFactory.apiService.addLike(getAccessToken(), feedPost.ownerId, feedPost.id)
+                ApiFactory.apiService.addLike(
+                    getAccessToken(),
+                    feedPost.ownerId,
+                    feedPost.id
+                )
 
         return likesResponseDto.likes.count
     }

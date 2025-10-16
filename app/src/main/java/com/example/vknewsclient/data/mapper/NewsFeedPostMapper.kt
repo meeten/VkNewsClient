@@ -20,7 +20,7 @@ class NewsFeedPostMapper {
 
         for (post in posts) {
 
-            val group = groups.find { it.id == post.fromId.absoluteValue } ?: break
+            val group = groups.find { it.id == post.ownerId.absoluteValue } ?: break
             val feedPost = FeedPost(
                 id = post.id,
                 ownerId = post.ownerId,

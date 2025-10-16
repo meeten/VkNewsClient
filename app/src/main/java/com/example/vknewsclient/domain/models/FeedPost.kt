@@ -1,8 +1,8 @@
 package com.example.vknewsclient.domain.models
 
 data class FeedPost(
-    val id: Int,
-    val ownerId: Int,
+    val id: Long,
+    val ownerId: Long,
     val publicImageUrl: String,
     val publicName: String,
     val publicationTime: String,
