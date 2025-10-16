@@ -28,6 +28,14 @@ class HomeViewModel : ViewModel() {
         }
     }
 
+    fun loadNextPosts() {
+        _newsFeedScreenState.value =
+            NewsFeedScreenState.Posts(repository.feedPosts, true)
+
+
+        loadPosts()
+    }
+
     fun changeLikeStatus(feedPost: FeedPost) {
         viewModelScope.launch {
             repository.changeLikeStatus(feedPost)

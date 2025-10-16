@@ -12,6 +12,12 @@ interface VKApiService {
         @Query("access_token") accessToken: String,
     ): NewsFeedResponseDto
 
+    @GET("newsfeed.get?v=5.199&filters=post")
+    suspend fun loadPosts(
+        @Query("access_token") accessToken: String,
+        @Query("start_from") startFrom: String,
+    ): NewsFeedResponseDto
+
     @GET("likes.add?v=5.199&type=post")
     suspend fun addLike(
         @Query("access_token") accessToken: String,
