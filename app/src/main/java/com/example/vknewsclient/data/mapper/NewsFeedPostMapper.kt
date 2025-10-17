@@ -30,7 +30,7 @@ class NewsFeedPostMapper {
                 postContent = post.text,
                 postContentImageUrl = post.attachmentsDto?.lastOrNull()?.photo?.photoUrls?.lastOrNull()?.photoUrl
                     ?: continue,
-                isLiked = post.likesDto.idLiked == 1,
+                isLiked = post.likesDto.isLiked == 1,
                 statistics = listOf<StatisticItem>(
                     StatisticItem(
                         type = StatisticItemType.VIEWS,
@@ -39,7 +39,7 @@ class NewsFeedPostMapper {
                     ),
                     StatisticItem(
                         type = StatisticItemType.LIKES,
-                        src = if (post.likesDto.idLiked == 1) R.drawable.ic_like_set else R.drawable.ic_like,
+                        src = if (post.likesDto.isLiked == 1) R.drawable.ic_like_set else R.drawable.ic_like,
                         count = post.likesDto.count
                     ),
                     StatisticItem(
