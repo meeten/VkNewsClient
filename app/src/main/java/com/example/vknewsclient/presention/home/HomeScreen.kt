@@ -2,6 +2,7 @@ package com.example.vknewsclient.presention.home
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,6 +38,12 @@ fun HomeScreen(modifier: Modifier, onCommentClickListener: (FeedPost) -> Unit) {
                 viewModel,
                 onCommentClickListener,
             )
+        }
+
+        is NewsFeedScreenState.Loading -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = DarkBlue)
+            }
         }
 
         is NewsFeedScreenState.Initial -> {

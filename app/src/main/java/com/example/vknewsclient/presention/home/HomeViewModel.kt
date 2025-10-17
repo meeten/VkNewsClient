@@ -18,6 +18,7 @@ class HomeViewModel : ViewModel() {
     val newsFeedScreenState: LiveData<NewsFeedScreenState> get() = _newsFeedScreenState
 
     init {
+        _newsFeedScreenState.value = NewsFeedScreenState.Loading
         loadPosts()
     }
 
@@ -31,7 +32,6 @@ class HomeViewModel : ViewModel() {
     fun loadNextPosts() {
         _newsFeedScreenState.value =
             NewsFeedScreenState.Posts(repository.feedPosts, true)
-
 
         loadPosts()
     }
