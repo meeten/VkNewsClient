@@ -7,7 +7,7 @@ import retrofit2.http.Query
 
 interface VKApiService {
 
-    @GET("newsfeed.get?v=5.199&filters=post")
+    @GET("newsfeed.get?v=5.199&filters=post&count=70")
     suspend fun loadPosts(
         @Query("access_token") accessToken: String,
     ): NewsFeedResponseDto
