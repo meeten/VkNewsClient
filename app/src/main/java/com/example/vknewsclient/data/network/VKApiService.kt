@@ -1,6 +1,5 @@
 package com.example.vknewsclient.data.network
 
-import com.example.vknewsclient.data.model.IgnoreFeedPostResponseDto
 import com.example.vknewsclient.data.model.LikesResponseDto
 import com.example.vknewsclient.data.model.NewsFeedResponseDto
 import retrofit2.http.GET
@@ -38,5 +37,5 @@ interface VKApiService {
         @Query("access_token") accessToken: String,
         @Query("owner_id") ownerId: Long,
         @Query("item_id") itemId: Long,
-    ): IgnoreFeedPostResponseDto
+    )
 }

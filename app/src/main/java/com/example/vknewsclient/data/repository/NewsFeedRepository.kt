@@ -1,5 +1,6 @@
 package com.example.vknewsclient.data.repository
 
+import android.util.Log
 import com.example.vknewsclient.R
 import com.example.vknewsclient.data.mapper.NewsFeedPostMapper
 import com.example.vknewsclient.data.model.LikesResponseDto
@@ -8,6 +9,9 @@ import com.example.vknewsclient.domain.models.FeedPost
 import com.example.vknewsclient.domain.models.StatisticItem
 import com.example.vknewsclient.domain.models.StatisticItemType
 import com.vk.id.VKID
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 object NewsFeedRepository {
 
@@ -48,17 +52,20 @@ object NewsFeedRepository {
             ?: throw IllegalAccessError("Token was not received")
     }
 
-    suspend fun hidePostFromNewsFeed(feedPost: FeedPost) {
-        val ignoreFeedPostResponseDto = apiFactory.apiService.hidePostFromNewsFeed(
-            accessToken = getAccessToken(),
-            ownerId = feedPost.ownerId,
-            itemId = feedPost.id
-        )
+    fun hidePostFromNewsFeed(feedPost: FeedPost) {
+        _feedPosts.remove(feedPost)
 
-        val ignoreStatus = ignoreFeedPostResponseDto.ignoreFeedPostStatus.ignoreStatus
-
-        if (ignoreStatus) {
-            _feedPosts.remove(feedPost)
+        // Сетевой запрос (не ждем)
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                apiFactory.apiService.hidePostFromNewsFeed(
+                    accessToken = getAccessToken(),
+                    ownerId = feedPost.ownerId,
+                    itemId = feedPost.id
+                )
+            } catch (e: Exception) {
+                Log.e("HIDE_POST", "Failed to hide post", e)
+            }
         }
     }
 

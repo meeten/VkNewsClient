@@ -80,9 +80,7 @@ class HomeViewModel : ViewModel() {
     }
 
     fun hidePostFromNewsFeed(feedPost: FeedPost) {
-        viewModelScope.launch {
-            repository.hidePostFromNewsFeed(feedPost)
-            _newsFeedScreenState.value = NewsFeedScreenState.Posts(feedPosts = repository.feedPosts)
-        }
+        repository.hidePostFromNewsFeed(feedPost)
+        _newsFeedScreenState.value = NewsFeedScreenState.Posts(feedPosts = repository.feedPosts)
     }
 }
