@@ -65,7 +65,7 @@ private fun NewsFeedContent(
 
             val state = rememberSwipeToDismissBoxState(confirmValueChange = {
                 if (it == SwipeToDismissBoxValue.EndToStart) {
-                    viewModel.deletePostFromFeed(feedPost)
+                    viewModel.hidePostFromNewsFeed(feedPost)
                     true
                 }
 

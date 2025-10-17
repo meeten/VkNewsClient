@@ -48,6 +48,20 @@ object NewsFeedRepository {
             ?: throw IllegalAccessError("Token was not received")
     }
 
+    suspend fun hidePostFromNewsFeed(feedPost: FeedPost) {
+        val ignoreFeedPostResponseDto = apiFactory.apiService.hidePostFromNewsFeed(
+            accessToken = getAccessToken(),
+            ownerId = feedPost.ownerId,
+            itemId = feedPost.id
+        )
+
+        val ignoreStatus = ignoreFeedPostResponseDto.ignoreFeedPostStatus.ignoreStatus
+
+        if (ignoreStatus) {
+            _feedPosts.remove(feedPost)
+        }
+    }
+
     suspend fun changeLikeStatus(feedPost: FeedPost) {
         val indexFeedPost = _feedPosts.indexOf(feedPost)
         val newStatistics = feedPost.statistics.toMutableList().apply {

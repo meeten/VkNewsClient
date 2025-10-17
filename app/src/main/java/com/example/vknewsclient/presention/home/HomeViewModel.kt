@@ -79,14 +79,10 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun deletePostFromFeed(feedPost: FeedPost) {
-        var currentState = _newsFeedScreenState.value
-        if (currentState is NewsFeedScreenState.Posts) {
-            val modifiedFeedPosts = currentState.feedPosts.toMutableList()
-            modifiedFeedPosts.remove(feedPost)
-
-            currentState = currentState.copy(feedPosts = modifiedFeedPosts)
-            _newsFeedScreenState.value = currentState
+    fun hidePostFromNewsFeed(feedPost: FeedPost) {
+        viewModelScope.launch {
+            repository.hidePostFromNewsFeed(feedPost)
+            _newsFeedScreenState.value = NewsFeedScreenState.Posts(feedPosts = repository.feedPosts)
         }
     }
 }
