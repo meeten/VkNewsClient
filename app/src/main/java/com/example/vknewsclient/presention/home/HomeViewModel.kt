@@ -79,7 +79,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun deleteFeedPost(feedPost: FeedPost) {
+    fun deletePostFromFeed(feedPost: FeedPost) {
         var currentState = _newsFeedScreenState.value
         if (currentState is NewsFeedScreenState.Posts) {
             val modifiedFeedPosts = currentState.feedPosts.toMutableList()

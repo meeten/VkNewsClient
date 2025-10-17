@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.livedata.observeAsState
@@ -59,13 +62,30 @@ private fun NewsFeedContent(
         )
     ) {
         items(items = feedPosts, key = { it.id }) { feedPost ->
-            PostCard(
-                feedPost = feedPost,
-                onLikeClickListener = { viewModel.changeLikeStatus(feedPost) },
-                onCommentClickListener = { onCommentClickListener(feedPost) },
-                onShareClickListener = { viewModel.incrementStatistics(feedPost, it) },
-                onViewClickListener = { viewModel.incrementStatistics(feedPost, it) }
-            )
+
+            val state = rememberSwipeToDismissBoxState(confirmValueChange = {
+                if (it == SwipeToDismissBoxValue.EndToStart) {
+                    viewModel.deletePostFromFeed(feedPost)
+                    true
+                }
+
+                false
+            })
+
+            SwipeToDismissBox(
+                state = state,
+                enableDismissFromStartToEnd = false,
+                backgroundContent = {},
+                modifier = Modifier.animateItem()
+            ) {
+                PostCard(
+                    feedPost = feedPost,
+                    onLikeClickListener = { viewModel.changeLikeStatus(feedPost) },
+                    onCommentClickListener = { onCommentClickListener(feedPost) },
+                    onShareClickListener = { viewModel.incrementStatistics(feedPost, it) },
+                    onViewClickListener = { viewModel.incrementStatistics(feedPost, it) }
+                )
+            }
         }
 
         item {
