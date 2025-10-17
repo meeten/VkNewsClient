@@ -22,11 +22,11 @@ object NewsFeedRepository {
     private val mapper = NewsFeedPostMapper()
 
 
-    var nextFrom: String? = null
+    private var nextFrom: String? = null
     suspend fun loadNewsFeed(): List<FeedPost> {
-        if (nextFrom == null && _feedPosts.isNotEmpty()) return feedPosts
-
         val startFrom = nextFrom
+
+        if (startFrom == null && feedPosts.isNotEmpty()) return feedPosts
 
         val newsFeedResponseDto = if (startFrom == null) {
             apiFactory.apiService.loadPosts(
@@ -42,7 +42,6 @@ object NewsFeedRepository {
         nextFrom = newsFeedResponseDto.newsFeedContent.nextFrom
 
         val newsFeed = mapper.mapResponseToPosts(newsFeedResponseDto)
-
         _feedPosts.addAll(newsFeed)
         return feedPosts
     }
