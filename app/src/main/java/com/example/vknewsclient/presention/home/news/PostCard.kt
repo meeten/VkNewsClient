@@ -38,8 +38,6 @@ fun PostCard(
     feedPost: FeedPost,
     onLikeClickListener: (StatisticItem) -> Unit,
     onCommentClickListener: (StatisticItem) -> Unit,
-    onShareClickListener: (StatisticItem) -> Unit,
-    onViewClickListener: (StatisticItem) -> Unit,
 ) {
     Card(
         modifier = Modifier.padding(10.dp),
@@ -53,9 +51,7 @@ fun PostCard(
             Statistics(
                 feedPost.statistics,
                 onLikeClickListener,
-                onCommentClickListener,
-                onShareClickListener,
-                onViewClickListener
+                onCommentClickListener
             )
         }
     }
@@ -128,8 +124,6 @@ private fun Statistics(
     statistics: List<StatisticItem>,
     onLikeClickListener: (StatisticItem) -> Unit,
     onCommentClickListener: (StatisticItem) -> Unit,
-    onShareClickListener: (StatisticItem) -> Unit,
-    onViewClickListener: (StatisticItem) -> Unit,
 ) {
     val likes = statistics.findStatisticItemByType(StatisticItemType.LIKES)
     val comments = statistics.findStatisticItemByType(StatisticItemType.COMMENTS)
@@ -153,22 +147,25 @@ private fun Statistics(
 
             Spacer(modifier = Modifier.width(14.dp))
 
-            ImageTextLayout(shares.src, shares.count.toString()) {
-                onShareClickListener(shares)
-            }
+            ImageTextLayout(shares.src, shares.count.toString())
         }
 
-        ImageTextLayout(views.src, reducingLargeNumber(views.count)) {
-            onViewClickListener(views)
-        }
+        ImageTextLayout(views.src, reducingLargeNumber(views.count))
     }
 }
 
 @Composable
-private fun ImageTextLayout(src: Int, count: String, onItemClickListener: () -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
-        onItemClickListener()
-    }) {
+private fun ImageTextLayout(src: Int, count: String, onItemClickListener: (() -> Unit)? = null) {
+    val modifier = if (onItemClickListener == null) {
+        Modifier
+    } else {
+        Modifier.clickable {
+            onItemClickListener()
+        }
+    }
+
+
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
         Image(
             painter = painterResource(src),
             contentDescription = null,
