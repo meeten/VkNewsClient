@@ -1,6 +1,5 @@
 package com.example.vknewsclient.presention.comment
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,11 +22,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.example.vknewsclient.domain.models.CommentItem
 import com.example.vknewsclient.domain.models.FeedPost
 import com.example.vknewsclient.domain.state.CommentScreenState
@@ -42,7 +41,7 @@ fun CommentScreen(feedPost: FeedPost, onArrowBackClickListener: () -> Unit) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(text = "Comments for FeedPost id: ${commentScreenState.feedPost.id}") },
+                    title = { Text(text = "Комментарии") },
                     navigationIcon = {
                         IconButton(onClick = {
                             onArrowBackClickListener()
@@ -73,8 +72,8 @@ fun CommentItemContent(commentItem: CommentItem) {
             .fillMaxWidth()
     ) {
 
-        Image(
-            painter = painterResource(commentItem.authorAvatar),
+        AsyncImage(
+            model = commentItem.profile.profilePhoto100Url,
             contentDescription = null,
             modifier = Modifier.size(30.dp)
         )
@@ -83,14 +82,14 @@ fun CommentItemContent(commentItem: CommentItem) {
 
         Column {
             Text(
-                text = "${commentItem.authorName} CommentId: ${commentItem.id}",
+                text = commentItem.profile.getFullName(),
                 style = TextStyle(fontSize = 12.sp, color = MaterialTheme.colorScheme.onPrimary)
             )
 
             Spacer(modifier = Modifier.height(5.dp))
 
             Text(
-                text = commentItem.commentContent,
+                text = commentItem.text,
                 style = TextStyle(fontSize = 14.sp, color = MaterialTheme.colorScheme.onPrimary)
             )
 
