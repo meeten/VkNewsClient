@@ -1,6 +1,7 @@
 package com.example.vknewsclient.data.mapper
 
 import com.example.vknewsclient.data.model.CommentsResponseDto
+import com.example.vknewsclient.domain.TimeConverter
 import com.example.vknewsclient.domain.models.CommentItem
 import com.example.vknewsclient.domain.models.Profile
 import kotlin.math.absoluteValue
@@ -12,6 +13,7 @@ class CommentItemMapper {
 
         val comments = response.commentsContentDto.comments
         val profiles = response.commentsContentDto.profiles
+        val timeConverter = TimeConverter()
 
         for (commentItemDto in comments) {
             val profile =
@@ -20,7 +22,7 @@ class CommentItemMapper {
             val commentItem = CommentItem(
                 id = commentItemDto.id,
                 text = commentItemDto.text,
-                publicationTime = commentItemDto.dateUrl,
+                publicationTime = timeConverter.convertTimestampInDate(commentItemDto.dateUrl),
                 profile = Profile(
                     id = profile.id,
                     firstName = profile.firstName,
