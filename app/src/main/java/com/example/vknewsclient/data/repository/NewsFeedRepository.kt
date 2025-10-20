@@ -21,7 +21,6 @@ object NewsFeedRepository {
     private val apiFactory = ApiFactory
     private val mapper = NewsFeedPostMapper()
 
-
     private var nextFrom: String? = null
     suspend fun loadNewsFeed(): List<FeedPost> {
         val startFrom = nextFrom
@@ -44,11 +43,6 @@ object NewsFeedRepository {
         val newsFeed = mapper.mapResponseToPosts(newsFeedResponseDto)
         _feedPosts.addAll(newsFeed)
         return feedPosts
-    }
-
-    private fun getAccessToken(): String {
-        return VKID.instance.accessToken?.token
-            ?: throw IllegalAccessError("Token was not received")
     }
 
     fun hidePostFromNewsFeed(feedPost: FeedPost) {
@@ -106,5 +100,10 @@ object NewsFeedRepository {
                 )
 
         return likesResponseDto.likes.count
+    }
+
+    private fun getAccessToken(): String {
+        return VKID.instance.accessToken?.token
+            ?: throw IllegalAccessError("Token was not received")
     }
 }
