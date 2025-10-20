@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,6 +23,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -68,14 +70,16 @@ fun CommentScreen(feedPost: FeedPost, onArrowBackClickListener: () -> Unit) {
 fun CommentItemContent(commentItem: CommentItem) {
     Row(
         modifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth()
+            .padding(15.dp)
+            .fillMaxWidth(),
     ) {
 
         AsyncImage(
             model = commentItem.profile.profilePhoto100Url,
             contentDescription = null,
-            modifier = Modifier.size(30.dp)
+            modifier = Modifier
+                .size(60.dp)
+                .clip(shape = CircleShape)
         )
 
         Spacer(modifier = Modifier.width(10.dp))
@@ -83,7 +87,7 @@ fun CommentItemContent(commentItem: CommentItem) {
         Column {
             Text(
                 text = commentItem.profile.getFullName(),
-                style = TextStyle(fontSize = 12.sp, color = MaterialTheme.colorScheme.onPrimary)
+                style = TextStyle(fontSize = 13.sp, color = MaterialTheme.colorScheme.onPrimary)
             )
 
             Spacer(modifier = Modifier.height(5.dp))
@@ -93,11 +97,11 @@ fun CommentItemContent(commentItem: CommentItem) {
                 style = TextStyle(fontSize = 14.sp, color = MaterialTheme.colorScheme.onPrimary)
             )
 
-            Spacer(modifier = Modifier.height(3.dp))
+            Spacer(modifier = Modifier.height(5.dp))
 
             Text(
                 text = commentItem.publicationTime,
-                style = TextStyle(fontSize = 14.sp, color = MaterialTheme.colorScheme.onPrimary)
+                style = TextStyle(fontSize = 14.sp, color = MaterialTheme.colorScheme.onSecondary)
             )
         }
     }
