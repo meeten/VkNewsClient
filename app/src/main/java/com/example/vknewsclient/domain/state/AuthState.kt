@@ -3,6 +3,8 @@ package com.example.vknewsclient.domain.state
 import com.vk.id.AccessToken
 
 sealed class AuthState {
+
+    object Initial : AuthState()
     object Loading : AuthState()
     object NoAuthenticated : AuthState()
     data class Authenticated(val accessToken: AccessToken) : AuthState()

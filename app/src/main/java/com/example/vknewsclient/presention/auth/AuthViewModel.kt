@@ -1,5 +1,6 @@
 package com.example.vknewsclient.presention.auth
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,11 +13,6 @@ import com.vk.id.auth.VKIDAuthCallback
 import com.vk.id.auth.VKIDAuthParams
 import com.vk.id.refresh.VKIDRefreshTokenCallback
 import com.vk.id.refresh.VKIDRefreshTokenFail
-import com.vk.id.refresh.VKIDRefreshTokenFail.FailedApiCall
-import com.vk.id.refresh.VKIDRefreshTokenFail.FailedOAuthState
-import com.vk.id.refresh.VKIDRefreshTokenFail.NotAuthenticated
-import com.vk.id.refresh.VKIDRefreshTokenFail.RefreshTokenExpired
-import com.vk.id.refresh.VKIDRefreshTokenParams
 import kotlinx.coroutines.launch
 
 class AuthViewModel(val vkid: VKID) : ViewModel() {
@@ -27,43 +23,8 @@ class AuthViewModel(val vkid: VKID) : ViewModel() {
         checkToken()
     }
 
-    private fun checkToken() {
-        viewModelScope.launch {
-            vkid.refreshToken(params = VKIDRefreshTokenParams {
-                setOf("friends", "wall")
-            }, callback = object : VKIDRefreshTokenCallback {
-                override fun onSuccess(token: AccessToken) {
-                    _authState.value = AuthState.Authenticated(token)
-                }
-
-                override fun onFail(fail: VKIDRefreshTokenFail) {
-                    when (fail) {
-                        is FailedApiCall -> {
-                            _authState.value =
-                                AuthState.Error(fail.description)
-                        }
-
-                        is FailedOAuthState -> {
-                            _authState.value =
-                                AuthState.Error(fail.description)
-                        }
-
-                        is RefreshTokenExpired -> {
-                            _authState.value =
-                                AuthState.NoAuthenticated
-                        } // Это означает, что нужно пройти авторизацию заново
-
-                        is NotAuthenticated -> {
-                            _authState.value = AuthState.NoAuthenticated
-                        } // Пользователь понимает, что сначала нужно авторизоваться
-                    }
-                }
-            })
-
-        }
-    }
-
     fun registration() {
+        Log.d("AuthViewModel", "registration")
         _authState.value = AuthState.Loading
 
         val vkidAuthCallback = object : VKIDAuthCallback {
@@ -72,14 +33,7 @@ class AuthViewModel(val vkid: VKID) : ViewModel() {
             }
 
             override fun onFail(fail: VKIDAuthFail) {
-                when (fail) {
-                    is VKIDAuthFail.Canceled -> {
-                        _authState.value = AuthState.NoAuthenticated
-                    }
-
-                    else -> _authState.value = AuthState.Error(fail.description)
-                }
-
+                _authState.value = AuthState.Error(fail.description)
             }
         }
 
@@ -87,6 +41,44 @@ class AuthViewModel(val vkid: VKID) : ViewModel() {
             vkid.authorize(vkidAuthCallback, params = VKIDAuthParams {
                 scopes = setOf("friends", "wall")
             })
+        }
+    }
+
+    private fun checkToken() {
+        Log.d("AuthViewModel", "checkToken")
+        vkid.accessToken?.let {
+            _authState.value = AuthState.Authenticated(it)
+        } ?: refreshToken()
+    }
+
+    private fun refreshToken() {
+        Log.d("AuthViewModel", "refreshToken")
+        viewModelScope.launch {
+            VKID.instance.refreshToken(
+                callback = object : VKIDRefreshTokenCallback {
+                    override fun onSuccess(token: AccessToken) {
+                        _authState.value = AuthState.Authenticated(token)
+                    }
+
+                    override fun onFail(fail: VKIDRefreshTokenFail) {
+                        when (fail) {
+                            is VKIDRefreshTokenFail.NotAuthenticated -> {
+                                _authState.value =
+                                    AuthState.NoAuthenticated
+                            }
+
+                            is VKIDRefreshTokenFail.RefreshTokenExpired -> {
+                                _authState.value =
+                                    AuthState.NoAuthenticated
+                            }
+
+                            else -> {
+                                _authState.value = AuthState.Error(fail.description)
+                            }
+                        }
+                    }
+                }
+            )
         }
     }
 }

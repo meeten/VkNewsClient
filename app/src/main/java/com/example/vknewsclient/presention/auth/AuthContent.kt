@@ -11,17 +11,20 @@ import com.vk.id.VKID
 @Composable
 fun AuthContent() {
     val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(VKID.instance))
-    val authState = viewModel.authState.observeAsState(AuthState.Loading).value
+    val authState = viewModel.authState.observeAsState(AuthState.Initial).value
 
     when (authState) {
+        AuthState.Initial -> {}
+
         is AuthState.Loading -> LoadingScreen()
 
-        is AuthState.NoAuthenticated -> LoginScreen({
-            viewModel.registration()
-        })
+        is AuthState.NoAuthenticated -> {
+            LoginScreen({
+                viewModel.registration()
+            })
+        }
 
         is AuthState.Authenticated -> {
-            Log.d("AccessTokenAccessToken", "access token: ${authState.accessToken.token}")
             MainScreen()
         }
 
