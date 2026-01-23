@@ -29,7 +29,7 @@ class HomeViewModel : ViewModel() {
     val newsFeedScreenState = dataFlow
         .filter { it.isNotEmpty() }
         .map { NewsFeedScreenState.Posts(it) as NewsFeedScreenState }
-        .onStart { NewsFeedScreenState.Loading }
+        .onStart { emit(NewsFeedScreenState.Loading) }
         .mergeWith(nextDataFlow)
 
     fun loadNextPosts() {
