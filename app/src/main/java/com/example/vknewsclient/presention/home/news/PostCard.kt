@@ -29,6 +29,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.vknewsclient.R
 import com.example.vknewsclient.domain.models.FeedPost
 import com.example.vknewsclient.domain.models.StatisticItem
 import com.example.vknewsclient.domain.models.StatisticItemType
@@ -50,6 +51,7 @@ fun PostCard(
 
             Statistics(
                 feedPost.statistics,
+                feedPost.isLiked,
                 onLikeClickListener,
                 onCommentClickListener
             )
@@ -122,6 +124,7 @@ private fun Post(feedPost: FeedPost) {
 @Composable
 private fun Statistics(
     statistics: List<StatisticItem>,
+    isLiked: Boolean,
     onLikeClickListener: (StatisticItem) -> Unit,
     onCommentClickListener: (StatisticItem) -> Unit,
 ) {
@@ -133,7 +136,7 @@ private fun Statistics(
     Row(modifier = Modifier.padding(10.dp)) {
         Row(modifier = Modifier.weight(1f)) {
             ImageTextLayout(
-                likes.src,
+                if (isLiked) R.drawable.ic_like_set else R.drawable.ic_like,
                 likes.count.toString()
             ) {
                 onLikeClickListener(likes)
@@ -141,29 +144,41 @@ private fun Statistics(
 
             Spacer(modifier = Modifier.width(14.dp))
 
-            ImageTextLayout(comments.src, comments.count.toString()) {
+            ImageTextLayout(
+                R.drawable.ic_comment,
+                comments.count.toString()
+            ) {
                 onCommentClickListener(comments)
             }
 
             Spacer(modifier = Modifier.width(14.dp))
 
-            ImageTextLayout(shares.src, shares.count.toString())
+            ImageTextLayout(
+                R.drawable.ic_share,
+                shares.count.toString()
+            )
         }
 
-        ImageTextLayout(views.src, reducingLargeNumber(views.count))
+        ImageTextLayout(
+            R.drawable.ic_views_count,
+            reducingLargeNumber(views.count)
+        )
     }
 }
 
 @Composable
 private fun ImageTextLayout(src: Int, count: String, onItemClickListener: (() -> Unit)? = null) {
+    var isClick = false
     val modifier = if (onItemClickListener == null) {
         Modifier
     } else {
         Modifier.clickable {
-            onItemClickListener()
+            if (!isClick) {
+                onItemClickListener()
+                isClick = true
+            }
         }
     }
-
 
     Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
         Image(

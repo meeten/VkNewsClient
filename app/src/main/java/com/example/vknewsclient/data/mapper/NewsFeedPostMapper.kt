@@ -1,6 +1,5 @@
 package com.example.vknewsclient.data.mapper
 
-import com.example.vknewsclient.R
 import com.example.vknewsclient.data.model.NewsFeedResponseDto
 import com.example.vknewsclient.domain.TimeConverter
 import com.example.vknewsclient.domain.models.FeedPost
@@ -32,22 +31,18 @@ class NewsFeedPostMapper {
                 statistics = listOf<StatisticItem>(
                     StatisticItem(
                         type = StatisticItemType.VIEWS,
-                        src = R.drawable.ic_views_count,
                         count = post.viewsDto.count
                     ),
                     StatisticItem(
                         type = StatisticItemType.LIKES,
-                        src = if (post.likesDto.isLiked == 1) R.drawable.ic_like_set else R.drawable.ic_like,
                         count = post.likesDto.count
                     ),
                     StatisticItem(
                         type = StatisticItemType.COMMENTS,
-                        src = R.drawable.ic_comment,
                         count = post.commentsDto.count
                     ),
                     StatisticItem(
                         type = StatisticItemType.SHARES,
-                        src = R.drawable.ic_share,
                         count = post.repostsDto.count
                     )
                 )

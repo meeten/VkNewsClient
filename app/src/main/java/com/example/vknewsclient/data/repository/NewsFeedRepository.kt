@@ -104,24 +104,18 @@ object NewsFeedRepository {
     }
 
     suspend fun changeLikeStatus(feedPost: FeedPost) {
-        val indexFeedPost = _feedPosts.indexOf(feedPost)
+        val newCount = getLikesNewCount(feedPost)
         val newStatistics = feedPost.statistics.toMutableList().apply {
-            removeIf {
-                it.type == StatisticItemType.LIKES
-            }
-            add(
-                StatisticItem(
-                    type = StatisticItemType.LIKES,
-                    src = if (feedPost.isLiked) R.drawable.ic_like else R.drawable.ic_like_set,
-                    count = getNewCount(feedPost)
-                )
-            )
+            removeIf { it.type == StatisticItemType.LIKES }
+            add(StatisticItem(type = StatisticItemType.LIKES, count = newCount))
         }
 
         val newFeedPost = feedPost.copy(
-            isLiked = !feedPost.isLiked, statistics = newStatistics
+            statistics = newStatistics,
+            isLiked = !feedPost.isLiked
         )
-        _feedPosts[indexFeedPost] = newFeedPost
+        val index = feedPosts.indexOf(feedPost)
+        _feedPosts[index] = newFeedPost
         refreshListFlow.emit(feedPosts.toList())
     }
 
@@ -132,7 +126,7 @@ object NewsFeedRepository {
         nextDataNeededEvents.emit(Unit)
     }
 
-    private suspend fun getNewCount(feedPost: FeedPost): Int {
+    private suspend fun getLikesNewCount(feedPost: FeedPost): Int {
         val likesResponseDto =
             if (feedPost.isLiked)
                 ApiFactory.apiService.deleteLike(
