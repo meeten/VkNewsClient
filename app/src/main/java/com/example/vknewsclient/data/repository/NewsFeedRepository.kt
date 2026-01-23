@@ -89,16 +89,11 @@ object NewsFeedRepository {
     suspend fun hidePostFromNewsFeed(feedPost: FeedPost) {
         _feedPosts.remove(feedPost)
 
-        // Сетевой запрос (не ждем)
-        try {
-            apiFactory.apiService.hidePostFromNewsFeed(
-                accessToken = getAccessToken(),
-                ownerId = feedPost.ownerId,
-                itemId = feedPost.id
-            )
-        } catch (e: Exception) {
-            Log.e("HIDE_POST", "Failed to hide post", e)
-        }
+        apiFactory.apiService.ignorePost(
+            accessToken = getAccessToken(),
+            ownerId = feedPost.ownerId,
+            itemId = feedPost.id
+        )
 
         refreshListFlow.emit(feedPosts.toList())
     }

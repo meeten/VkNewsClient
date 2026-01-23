@@ -41,7 +41,7 @@ interface VKApiService {
     ): CommentsResponseDto
 
     @GET("newsfeed.ignoreItem?v=5.199&type=wall")
-    suspend fun hidePostFromNewsFeed(
+    suspend fun ignorePost(
         @Query("access_token") accessToken: String,
         @Query("owner_id") ownerId: Long,
         @Query("item_id") itemId: Long,
