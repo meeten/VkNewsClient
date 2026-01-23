@@ -1,11 +1,13 @@
 package com.example.vknewsclient.presention.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vknewsclient.data.repository.NewsFeedRepository
 import com.example.vknewsclient.domain.models.FeedPost
 import com.example.vknewsclient.domain.state.NewsFeedScreenState
 import com.example.vknewsclient.extensions.mergeWith
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
@@ -17,6 +19,10 @@ class HomeViewModel : ViewModel() {
 
     private val repository = NewsFeedRepository
     private val dataFlow = repository.data
+    private val exceptionHandler =
+        CoroutineExceptionHandler { _, _ ->
+            Log.d("HomeViewModel", "Handler caught error")
+        }
 
     private val nextDataNeeded =
         MutableSharedFlow<Unit>()
@@ -40,13 +46,13 @@ class HomeViewModel : ViewModel() {
     }
 
     fun changeLikeStatus(feedPost: FeedPost) {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             repository.changeLikeStatus(feedPost)
         }
     }
 
     fun hidePostFromNewsFeed(feedPost: FeedPost) {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             repository.hidePostFromNewsFeed(feedPost)
         }
     }
