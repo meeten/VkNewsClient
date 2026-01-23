@@ -9,13 +9,13 @@ import com.example.vknewsclient.presention.main.MainScreen
 import com.vk.id.VKID
 
 @Composable
-fun AuthContent() {
-    val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(VKID.instance))
-    val authState = viewModel.authState.observeAsState(AuthState.Initial).value
+fun AuthContent(
+    onAuthorized: () -> Unit,
+) {
+    val viewModel: AuthViewModel = viewModel()
+    val authState = viewModel.authState.observeAsState(AuthState.NoAuthenticated).value
 
     when (authState) {
-        AuthState.Initial -> {}
-
         is AuthState.Loading -> LoadingScreen()
 
         is AuthState.NoAuthenticated -> {
@@ -25,7 +25,7 @@ fun AuthContent() {
         }
 
         is AuthState.Authenticated -> {
-            MainScreen()
+            onAuthorized()
         }
 
         is AuthState.Error -> {

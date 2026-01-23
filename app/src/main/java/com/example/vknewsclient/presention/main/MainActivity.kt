@@ -12,7 +12,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             VkNewsClientTheme {
-                AuthContent()
+                RootScreen()
             }
         }
     }
