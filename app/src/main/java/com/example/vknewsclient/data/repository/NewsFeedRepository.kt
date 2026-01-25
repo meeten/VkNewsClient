@@ -1,8 +1,7 @@
 package com.example.vknewsclient.data.repository
 
 import android.util.Log
-import com.example.vknewsclient.R
-import com.example.vknewsclient.data.mapper.NewsFeedPostMapper
+import com.example.vknewsclient.data.mapper.NewsFeedMapper
 import com.example.vknewsclient.data.network.ApiFactory
 import com.example.vknewsclient.domain.models.FeedPost
 import com.example.vknewsclient.domain.models.StatisticItem
@@ -26,7 +25,7 @@ object NewsFeedRepository {
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
     private val nextDataNeededEvents = MutableSharedFlow<Unit>(replay = 1)
     private val apiFactory = ApiFactory
-    private val mapper = NewsFeedPostMapper()
+    private val mapper = NewsFeedMapper()
 
     private val _tokenValidEvents = MutableSharedFlow<Unit>(replay = 1)
     val tokenValidEvents get() = _tokenValidEvents.asSharedFlow()
@@ -119,6 +118,21 @@ object NewsFeedRepository {
         nextFrom = null
 
         nextDataNeededEvents.emit(Unit)
+    }
+
+    fun getComments(feedPost: FeedPost) = flow {
+        val commentsResponseDto =
+            apiFactory.apiService.getComments(
+                accessToken = getAccessToken(),
+                ownerId = feedPost.ownerId,
+                postId = feedPost.id
+            )
+
+        val comments =
+            mapper.mapResponseToComments(
+                commentsResponseDto
+            )
+        emit(comments)
     }
 
     private suspend fun getLikesNewCount(feedPost: FeedPost): Int {
