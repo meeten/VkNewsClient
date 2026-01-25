@@ -21,7 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
@@ -37,9 +37,11 @@ import com.example.vknewsclient.domain.state.CommentScreenState
 @Composable
 fun CommentScreen(feedPost: FeedPost, onArrowBackClickListener: () -> Unit) {
     val viewModel: CommentViewModel = viewModel(factory = CommentViewModelFactory(feedPost))
-    val commentScreenState = viewModel.commentScreenState.observeAsState().value
+    val commentScreenState = viewModel.commentState
+        .collectAsState(CommentScreenState.Initial)
 
-    if (commentScreenState is CommentScreenState.Comments) {
+    val currentState = commentScreenState.value
+    if (currentState is CommentScreenState.Comments) {
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -58,7 +60,7 @@ fun CommentScreen(feedPost: FeedPost, onArrowBackClickListener: () -> Unit) {
             }
         ) {
             LazyColumn(modifier = Modifier.padding(it)) {
-                items(items = commentScreenState.comments, key = { it.id }) { commentItem ->
+                items(items = currentState.comments, key = { it.id }) { commentItem ->
                     CommentItemContent(commentItem)
                 }
             }
