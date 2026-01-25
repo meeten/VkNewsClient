@@ -27,7 +27,7 @@ object NewsFeedRepository {
     private val apiFactory = ApiFactory
     private val mapper = NewsFeedMapper()
 
-    private val _tokenValidEvents = MutableSharedFlow<Unit>(replay = 1)
+    private val _tokenValidEvents = MutableSharedFlow<Unit>()
     val tokenValidEvents get() = _tokenValidEvents.asSharedFlow()
     private val loadedListFlow = flow {
         nextDataNeededEvents.emit(Unit)

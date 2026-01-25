@@ -1,8 +1,13 @@
 package com.example.vknewsclient.presention.main
 
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vknewsclient.domain.state.RootState
 import com.example.vknewsclient.presention.auth.AuthContent
@@ -10,10 +15,15 @@ import com.example.vknewsclient.presention.auth.AuthContent
 @Composable
 fun RootScreen() {
     val viewModel: MainViewModel = viewModel()
-    val rootState = viewModel.rootState.observeAsState(RootState.Initial).value
+    val rootState = viewModel.rootState.collectAsState(RootState.Initial)
 
-    when (rootState) {
-        RootState.Initial -> {}
+    val currentState = rootState.value
+    when (currentState) {
+        RootState.Initial -> {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.primary))
+        }
 
         RootState.Authorized -> {
             MainScreen()
