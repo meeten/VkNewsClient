@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.vknewsclient.data.repository.NewsFeedRepository
 import com.example.vknewsclient.domain.state.RootState
 import com.vk.id.VKID
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -13,7 +12,6 @@ import kotlinx.coroutines.launch
 class MainViewModel() : ViewModel() {
 
     private val vkid = VKID.instance
-    private val authorizedFlow = MutableSharedFlow<RootState>()
 
     private val _rootState = MutableStateFlow<RootState>(
         RootState.Initial
@@ -27,7 +25,7 @@ class MainViewModel() : ViewModel() {
 
     fun onAuthorized() {
         viewModelScope.launch {
-            authorizedFlow.emit(RootState.Authorized)
+            _rootState.value = RootState.Authorized
         }
     }
 
