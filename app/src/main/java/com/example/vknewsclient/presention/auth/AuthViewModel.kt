@@ -1,47 +1,47 @@
 package com.example.vknewsclient.presention.auth
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vknewsclient.data.repository.NewsFeedRepository
-import com.example.vknewsclient.domain.state.AuthState
-import com.vk.id.AccessToken
-import com.vk.id.VKID
-import com.vk.id.VKIDAuthFail
-import com.vk.id.auth.VKIDAuthCallback
-import com.vk.id.auth.VKIDAuthParams
+import com.example.vknewsclient.domain.AuthStatus
+import com.example.vknewsclient.domain.AuthorizedUseCase
+import com.example.vknewsclient.presention.auth.AuthState
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AuthViewModel() : ViewModel() {
+class AuthViewModel @Inject constructor(
+    private val authorizedUseCase: AuthorizedUseCase
+) : ViewModel() {
 
-    private val vkid = VKID.instance
-    private val _authState = MutableLiveData<AuthState>()
-    val authState: LiveData<AuthState> get() = _authState
+    private val _authState =
+        MutableStateFlow<AuthState>(AuthState.NoAuthenticated)
+    val authState
+        get() = _authState.asStateFlow()
 
-    fun registration() {
-        Log.d("AuthViewModel", "registration")
-        _authState.value = AuthState.Loading
-
-        val vkidAuthCallback = object : VKIDAuthCallback {
-            override fun onAuth(accessToken: AccessToken) {
-                _authState.value = AuthState.Authenticated
-
-                viewModelScope.launch {
-                    NewsFeedRepository.resetAndLoadData()
-                }
-            }
-
-            override fun onFail(fail: VKIDAuthFail) {
-                _authState.value = AuthState.Error(fail.description)
-            }
+    private val coroutineExceptionHandler =
+        CoroutineExceptionHandler { _, throwable ->
+            _authState.value = AuthState.Error(throwable.message.toString())
         }
 
-        viewModelScope.launch {
-            vkid.authorize(vkidAuthCallback, params = VKIDAuthParams {
-                scopes = setOf("friends", "wall")
-            })
+    fun registration() {
+        _authState.value = AuthState.Loading
+        viewModelScope.launch(coroutineExceptionHandler) {
+            val authStatus = authorizedUseCase()
+            when (authStatus) {
+                AuthStatus.UNKNOWN -> {}
+
+                AuthStatus.AUTHORIZED -> {
+                    _authState.value = AuthState.Authenticated
+                }
+
+                AuthStatus.UNAUTHORIZED -> {
+                    _authState.value = AuthState.NoAuthenticated
+                }
+            }
         }
     }
 }

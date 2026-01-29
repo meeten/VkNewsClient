@@ -3,6 +3,9 @@ package com.example.vknewsclient.data.repository
 import android.util.Log
 import com.example.vknewsclient.data.mapper.NewsFeedMapper
 import com.example.vknewsclient.data.network.ApiFactory
+import com.example.vknewsclient.data.network.VKApiService
+import com.example.vknewsclient.di.ApplicationScope
+import com.example.vknewsclient.domain.NewsFeedRepository
 import com.example.vknewsclient.domain.models.FeedPost
 import com.example.vknewsclient.domain.models.StatisticItem
 import com.example.vknewsclient.domain.models.StatisticItemType
@@ -19,16 +22,19 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
-object NewsFeedRepository {
+@ApplicationScope
+class NewsFeedRepositoryImpl @Inject constructor(
+    private val mapper: NewsFeedMapper,
+    private val apiService: VKApiService
+) : NewsFeedRepository {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
     private val nextDataNeededEvents = MutableSharedFlow<Unit>(replay = 1)
-    private val apiFactory = ApiFactory
-    private val mapper = NewsFeedMapper()
-
     private val _tokenValidEvents = MutableSharedFlow<Unit>()
     val tokenValidEvents get() = _tokenValidEvents.asSharedFlow()
+
     private val loadedListFlow = flow {
         nextDataNeededEvents.emit(Unit)
         nextDataNeededEvents.collect {
@@ -40,11 +46,11 @@ object NewsFeedRepository {
             }
 
             val newsFeedResponseDto = if (startFrom == null) {
-                apiFactory.apiService.loadPosts(
+                apiService.loadPosts(
                     accessToken = getAccessToken()
                 )
             } else {
-                apiFactory.apiService.loadPosts(
+                apiService.loadPosts(
                     accessToken = getAccessToken(),
                     startFrom = startFrom
                 )
@@ -66,13 +72,13 @@ object NewsFeedRepository {
     }.catch {
         Log.d("NewsFeedRepository", it.message.toString())
     }
-
     private val refreshListFlow = MutableSharedFlow<List<FeedPost>>()
+
     private val _feedPosts = mutableListOf<FeedPost>()
     val feedPosts: List<FeedPost> get() = _feedPosts.toList()
 
     private var nextFrom: String? = null
-    val data: StateFlow<List<FeedPost>> =
+    override val data: StateFlow<List<FeedPost>> =
         loadedListFlow
             .mergeWith(refreshListFlow)
             .stateIn(
@@ -81,14 +87,14 @@ object NewsFeedRepository {
                 initialValue = feedPosts
             )
 
-    suspend fun loadNextData() {
+    override suspend fun loadNextData() {
         nextDataNeededEvents.emit(Unit)
     }
 
-    suspend fun hidePostFromNewsFeed(feedPost: FeedPost) {
+    override suspend fun hidePostFromNewsFeed(feedPost: FeedPost) {
         _feedPosts.remove(feedPost)
 
-        apiFactory.apiService.ignorePost(
+        apiService.ignorePost(
             accessToken = getAccessToken(),
             ownerId = feedPost.ownerId,
             itemId = feedPost.id
@@ -97,7 +103,7 @@ object NewsFeedRepository {
         refreshListFlow.emit(feedPosts.toList())
     }
 
-    suspend fun changeLikeStatus(feedPost: FeedPost) {
+    override suspend fun changeLikeStatus(feedPost: FeedPost) {
         val newCount = getLikesNewCount(feedPost)
         val newStatistics = feedPost.statistics.toMutableList().apply {
             removeIf { it.type == StatisticItemType.LIKES }
@@ -113,16 +119,16 @@ object NewsFeedRepository {
         refreshListFlow.emit(feedPosts.toList())
     }
 
-    suspend fun resetAndLoadData() {
+    override suspend fun resetAndLoadData() {
         _feedPosts.clear()
         nextFrom = null
 
         nextDataNeededEvents.emit(Unit)
     }
 
-    fun getComments(feedPost: FeedPost) = flow {
+    override fun getComments(feedPost: FeedPost) = flow {
         val commentsResponseDto =
-            apiFactory.apiService.getComments(
+            apiService.getComments(
                 accessToken = getAccessToken(),
                 ownerId = feedPost.ownerId,
                 postId = feedPost.id
@@ -158,5 +164,7 @@ object NewsFeedRepository {
             ?: throw IllegalAccessError("Token was not received")
     }
 
-    const val RETRY_TIMEOUT_MILLS = 3000L
+    companion object {
+        const val RETRY_TIMEOUT_MILLS = 3000L
+    }
 }

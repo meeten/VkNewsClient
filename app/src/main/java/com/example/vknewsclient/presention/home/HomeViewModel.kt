@@ -3,9 +3,11 @@ package com.example.vknewsclient.presention.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vknewsclient.data.repository.NewsFeedRepository
+import com.example.vknewsclient.domain.ChangeLikeStatusUseCase
+import com.example.vknewsclient.domain.DataUseCase
+import com.example.vknewsclient.domain.HidePostFromNewsFeedUseCase
+import com.example.vknewsclient.domain.LoadNextDataUseCase
 import com.example.vknewsclient.domain.models.FeedPost
-import com.example.vknewsclient.domain.state.NewsFeedScreenState
 import com.example.vknewsclient.extensions.mergeWith
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -14,11 +16,17 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel @Inject constructor(
+    dataUseCase: DataUseCase,
+    private val loadNextDataUseCase: LoadNextDataUseCase,
+    private val changeLikeStatusUseCase: ChangeLikeStatusUseCase,
+    private val hidePostFromNewsFeedUseCase: HidePostFromNewsFeedUseCase
+) : ViewModel() {
 
-    private val repository = NewsFeedRepository
-    private val dataFlow = repository.data
+    private val dataFlow = dataUseCase()
+
     private val exceptionHandler =
         CoroutineExceptionHandler { _, _ ->
             Log.d("HomeViewModel", "Handler caught error")
@@ -41,19 +49,19 @@ class HomeViewModel : ViewModel() {
     fun loadNextPosts() {
         viewModelScope.launch {
             nextDataNeeded.emit(Unit)
-            repository.loadNextData()
+            loadNextDataUseCase()
         }
     }
 
     fun changeLikeStatus(feedPost: FeedPost) {
         viewModelScope.launch(exceptionHandler) {
-            repository.changeLikeStatus(feedPost)
+            changeLikeStatusUseCase(feedPost)
         }
     }
 
     fun hidePostFromNewsFeed(feedPost: FeedPost) {
         viewModelScope.launch(exceptionHandler) {
-            repository.hidePostFromNewsFeed(feedPost)
+            hidePostFromNewsFeedUseCase(feedPost)
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.example.vknewsclient.presention.main
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,20 +8,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.vknewsclient.domain.state.RootState
+import com.example.vknewsclient.di.LocalViewModelFactory
 import com.example.vknewsclient.presention.auth.AuthContent
 
 @Composable
 fun RootScreen() {
-    val viewModel: MainViewModel = viewModel()
+    val viewModelFactory = LocalViewModelFactory.current
+    val viewModel: MainViewModel = viewModel(factory = viewModelFactory)
     val rootState = viewModel.rootState.collectAsState(RootState.Initial)
 
     val currentState = rootState.value
     when (currentState) {
         RootState.Initial -> {
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.primary))
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.primary)
+            )
         }
 
         RootState.Authorized -> {
@@ -30,7 +32,6 @@ fun RootScreen() {
         }
 
         RootState.Unauthorized -> {
-            Log.d("RootScreen", "Unauthorized")
             AuthContent {
                 viewModel.onAuthorized()
             }

@@ -14,19 +14,18 @@ import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.vknewsclient.di.LocalViewModelFactory
 import com.example.vknewsclient.domain.models.FeedPost
-import com.example.vknewsclient.domain.state.NewsFeedScreenState
-import com.example.vknewsclient.presention.home.news.PostCard
 import com.example.vknewsclient.ui.theme.DarkBlue
 
 @Composable
 fun HomeScreen(modifier: Modifier, onCommentClickListener: (FeedPost) -> Unit) {
-    val viewModel: HomeViewModel = viewModel()
+    val viewModelFactory = LocalViewModelFactory.current
+    val viewModel: HomeViewModel = viewModel(factory = viewModelFactory)
     val newsFeedScreenState =
         viewModel.newsFeedScreenState.collectAsState(NewsFeedScreenState.Initial).value
 

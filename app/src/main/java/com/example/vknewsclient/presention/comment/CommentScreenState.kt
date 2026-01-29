@@ -1,4 +1,4 @@
-package com.example.vknewsclient.domain.state
+package com.example.vknewsclient.presention.comment
 
 import com.example.vknewsclient.domain.models.CommentItem
 import com.example.vknewsclient.domain.models.FeedPost

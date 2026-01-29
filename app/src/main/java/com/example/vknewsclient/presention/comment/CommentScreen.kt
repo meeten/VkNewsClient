@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
@@ -29,14 +30,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.vknewsclient.di.LocalAppComponent
 import com.example.vknewsclient.domain.models.CommentItem
 import com.example.vknewsclient.domain.models.FeedPost
-import com.example.vknewsclient.domain.state.CommentScreenState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentScreen(feedPost: FeedPost, onArrowBackClickListener: () -> Unit) {
-    val viewModel: CommentViewModel = viewModel(factory = CommentViewModelFactory(feedPost))
+    val appComponent = LocalAppComponent.current
+    val commentsComponent = remember(feedPost) {
+        appComponent.commentsComponentFactory().create(feedPost)
+    }
+
+    val viewModel: CommentViewModel =
+        viewModel(factory = commentsComponent.commentViewModelFactory())
+
     val commentScreenState = viewModel.commentState
         .collectAsState(CommentScreenState.Initial)
 

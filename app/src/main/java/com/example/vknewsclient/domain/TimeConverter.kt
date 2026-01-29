@@ -3,8 +3,9 @@ package com.example.vknewsclient.domain
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.Date
+import javax.inject.Inject
 
-class TimeConverter {
+class TimeConverter @Inject constructor() {
 
     private val specialTimeInTimestamp = getSpecialDateInTimestamp()
 

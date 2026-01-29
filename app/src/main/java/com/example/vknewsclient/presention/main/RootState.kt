@@ -1,4 +1,4 @@
-package com.example.vknewsclient.domain.state
+package com.example.vknewsclient.presention.main
 
 sealed class RootState {
 

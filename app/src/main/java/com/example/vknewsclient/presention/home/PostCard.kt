@@ -1,4 +1,4 @@
-package com.example.vknewsclient.presention.home.news
+package com.example.vknewsclient.presention.home
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image

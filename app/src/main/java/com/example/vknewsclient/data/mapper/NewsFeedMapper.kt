@@ -8,16 +8,18 @@ import com.example.vknewsclient.domain.models.FeedPost
 import com.example.vknewsclient.domain.models.Profile
 import com.example.vknewsclient.domain.models.StatisticItem
 import com.example.vknewsclient.domain.models.StatisticItemType
+import javax.inject.Inject
 import kotlin.math.absoluteValue
 
-class NewsFeedMapper {
+class NewsFeedMapper @Inject constructor(
+    private val timeConverter: TimeConverter
+) {
 
     fun mapResponseToPosts(responseDto: NewsFeedResponseDto): List<FeedPost> {
         val result = mutableListOf<FeedPost>()
 
         val posts = responseDto.newsFeedContent.posts
         val groups = responseDto.newsFeedContent.groups
-        val timeConverter = TimeConverter()
 
         for (post in posts) {
 
@@ -32,7 +34,7 @@ class NewsFeedMapper {
                 postContentImageUrl = post.attachmentsDto?.lastOrNull()?.photo?.photoUrls?.lastOrNull()?.photoUrl
                     ?: continue,
                 isLiked = post.likesDto.isLiked == 1,
-                statistics = listOf<StatisticItem>(
+                statistics = listOf(
                     StatisticItem(
                         type = StatisticItemType.VIEWS,
                         count = post.viewsDto.count
@@ -63,7 +65,6 @@ class NewsFeedMapper {
 
         val comments = response.commentsContentDto.comments
         val profiles = response.commentsContentDto.profiles
-        val timeConverter = TimeConverter()
 
         for (commentItemDto in comments) {
             val profile =
