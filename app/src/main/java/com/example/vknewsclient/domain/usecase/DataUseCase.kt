@@ -1,7 +1,7 @@
-package com.example.vknewsclient.domain
+package com.example.vknewsclient.domain.usecase
 
 import com.example.vknewsclient.domain.models.FeedPost
-import kotlinx.coroutines.flow.Flow
+import com.example.vknewsclient.domain.repository.NewsFeedRepository
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 

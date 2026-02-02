@@ -1,8 +1,9 @@
 package com.example.vknewsclient.data.repository
 
 import com.example.vknewsclient.di.ApplicationScope
-import com.example.vknewsclient.domain.AuthRepository
+import com.example.vknewsclient.domain.repository.AuthRepository
 import com.example.vknewsclient.domain.AuthStatus
+import com.example.vknewsclient.domain.repository.NewsFeedRepository
 import com.vk.id.AccessToken
 import com.vk.id.VKID
 import com.vk.id.VKIDAuthFail
@@ -14,7 +15,7 @@ import javax.inject.Inject
 
 @ApplicationScope
 class AuthRepositoryImpl @Inject constructor(
-    private val newsFeedRepository: NewsFeedRepositoryImpl
+    private val newsFeedRepository: NewsFeedRepository
 ) : AuthRepository {
 
     private val vkid = VKID.instance
@@ -35,7 +36,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun authorized(): AuthStatus {
         val resultDeferred =
-            CompletableDeferred(AuthStatus.UNKNOWN)
+            CompletableDeferred<AuthStatus>()
 
         val vkidAuthCallback = object : VKIDAuthCallback {
             override fun onAuth(accessToken: AccessToken) {

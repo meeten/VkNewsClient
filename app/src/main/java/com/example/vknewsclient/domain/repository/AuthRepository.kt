@@ -1,5 +1,6 @@
-package com.example.vknewsclient.domain
+package com.example.vknewsclient.domain.repository
 
+import com.example.vknewsclient.domain.AuthStatus
 import kotlinx.coroutines.flow.SharedFlow
 
 interface AuthRepository {

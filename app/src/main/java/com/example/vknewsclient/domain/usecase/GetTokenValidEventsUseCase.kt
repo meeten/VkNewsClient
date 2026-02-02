@@ -1,5 +1,6 @@
-package com.example.vknewsclient.domain
+package com.example.vknewsclient.domain.usecase
 
+import com.example.vknewsclient.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.SharedFlow
 import javax.inject.Inject
 
