@@ -2,9 +2,9 @@
 
 **Современный Android-клиент для ленты новостей ВКонтакте**
 
-![Kotlin](https://img.shields.io/badge/Kotlin-1.9-7F52FF?logo=kotlin&logoColor=white)
-![Compose](https://img.shields.io/badge/Jetpack%20Compose-1.5-4285F4?logo=jetpackcompose&logoColor=white)
-![Android](https://img.shields.io/badge/Min%20SDK-24-34A853?logo=android)
+![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF?logo=kotlin&logoColor=white)
+![Compose](https://img.shields.io/badge/Jetpack%20Compose-1.11-4285F4?logo=jetpackcompose&logoColor=white)
+![Android](https://img.shields.io/badge/Min%20SDK-26-34A853?logo=android)
 ---
 
 ## ✨ Особенности
